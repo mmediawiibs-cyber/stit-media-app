@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   FolderKanban, Database, BarChart3, Plus, Trash2, Edit2, 
   Circle, Layers, Check 
 } from 'lucide-react';
 
-// === INISIALISASI FIREBASE ===
+// === FIREBASE FIRESTORE SETUP ===
 import { initializeApp } from "firebase/app";
-
+import { getFirestore, doc, onSnapshot, setDoc } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCGsd4ZjETtDkN26tdcYlUeRH2w1tXCRFI",
@@ -18,7 +18,8 @@ const firebaseConfig = {
   measurementId: "G-KPFLZ7314J"
 };
 
-initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 // === STRUKTUR KATEGORI & HIERARKI ===
 type CategoryType = 'kriteria' | 'jobdesk' | 'stakeholder' | 'program' | 'peralatan' | 'output';
@@ -77,6 +78,30 @@ export default function App() {
 
   const [divisions, setDivisions] = useState<Division[]>([]);
 
+  // 1. Ambil data realtime dari Firestore
+  useEffect(() => {
+    const unsub = onSnapshot(doc(db, "stit_data", "main_state"), (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        if (data.masterData) setMasterData(data.masterData);
+        if (data.divisions) setDivisions(data.divisions);
+      }
+    });
+    return () => unsub();
+  }, []);
+
+  // 2. Simpan data realtime ke Firestore
+  const syncToFirestore = async (newMaster: typeof masterData, newDivisions: Division[]) => {
+    try {
+      await setDoc(doc(db, "stit_data", "main_state"), {
+        masterData: newMaster,
+        divisions: newDivisions
+      });
+    } catch (err) {
+      console.error("Gagal sinkron Firestore:", err);
+    }
+  };
+
   // Handler Master Data
   const handleAddMaster = (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,25 +114,31 @@ export default function App() {
       checked: false
     };
 
-    setMasterData({
+    const updated = {
       ...masterData,
       [activeMasterCategory]: [...masterData[activeMasterCategory], newItem]
-    });
+    };
+    setMasterData(updated);
+    syncToFirestore(updated, divisions);
     setFormData({ col1: '', col2: '' });
   };
 
   const handleToggleCheck = (category: CategoryType, id: string) => {
-    setMasterData({
+    const updated = {
       ...masterData,
       [category]: masterData[category].map(item => item.id === id ? { ...item, checked: !item.checked } : item)
-    });
+    };
+    setMasterData(updated);
+    syncToFirestore(updated, divisions);
   };
 
   const handleDeleteMaster = (category: CategoryType, id: string) => {
-    setMasterData({
+    const updated = {
       ...masterData,
       [category]: masterData[category].filter(item => item.id !== id)
-    });
+    };
+    setMasterData(updated);
+    syncToFirestore(updated, divisions);
   };
 
   const startEdit = (item: MasterItem) => {
@@ -116,33 +147,53 @@ export default function App() {
   };
 
   const saveEdit = (category: CategoryType, id: string) => {
-    setMasterData({
+    const updated = {
       ...masterData,
       [category]: masterData[category].map(item => item.id === id ? { ...item, col1: editFormData.col1, col2: editFormData.col2 } : item)
-    });
+    };
+    setMasterData(updated);
+    syncToFirestore(updated, divisions);
     setEditingId(null);
   };
 
   // Handler Kanvas
   const addDivision = () => {
-    setDivisions([...divisions, { id: `div-${Date.now()}`, title: 'Divisi Baru', blocks: [] }]);
+    const updated = [...divisions, { id: `div-${Date.now()}`, title: 'Divisi Baru', blocks: [] }];
+    setDivisions(updated);
+    syncToFirestore(masterData, updated);
   };
 
   const updateDivisionTitle = (id: string, title: string) => {
-    setDivisions(divisions.map(d => d.id === id ? { ...d, title } : d));
+    const updated = divisions.map(d => d.id === id ? { ...d, title } : d);
+    setDivisions(updated);
+    syncToFirestore(masterData, updated);
+  };
+
+  const deleteDivision = (id: string) => {
+    const updated = divisions.filter(d => d.id !== id);
+    setDivisions(updated);
+    syncToFirestore(masterData, updated);
   };
 
   const addBlockToDivision = (divId: string, type: CategoryType) => {
-    setDivisions(divisions.map(d => {
+    const updated = divisions.map(d => {
       if (d.id === divId) {
         return { ...d, blocks: [...d.blocks, { id: `block-${Date.now()}`, type, selectedIds: [] }] };
       }
       return d;
-    }));
+    });
+    setDivisions(updated);
+    syncToFirestore(masterData, updated);
+  };
+
+  const deleteBlockFromDivision = (divId: string, blockId: string) => {
+    const updated = divisions.map(d => d.id === divId ? { ...d, blocks: d.blocks.filter(b => b.id !== blockId) } : d);
+    setDivisions(updated);
+    syncToFirestore(masterData, updated);
   };
 
   const selectItemForBlock = (divId: string, blockId: string, itemId: string) => {
-    setDivisions(divisions.map(d => {
+    const updated = divisions.map(d => {
       if (d.id === divId) {
         return {
           ...d,
@@ -155,11 +206,13 @@ export default function App() {
         };
       }
       return d;
-    }));
+    });
+    setDivisions(updated);
+    syncToFirestore(masterData, updated);
   };
 
   const removeBlockItem = (divId: string, blockId: string, itemId: string) => {
-    setDivisions(divisions.map(d => {
+    const updated = divisions.map(d => {
       if (d.id === divId) {
         return {
           ...d,
@@ -167,7 +220,9 @@ export default function App() {
         };
       }
       return d;
-    }));
+    });
+    setDivisions(updated);
+    syncToFirestore(masterData, updated);
   };
 
   // Kalkulasi Diagram
@@ -247,7 +302,7 @@ export default function App() {
             <div className="flex-1 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
               <div className="border-b border-slate-100 pb-4 mb-6">
                 <h2 className="text-xl font-black text-slate-800">Setup: {config[activeMasterCategory].label}</h2>
-                <p className="text-xs text-slate-500 mt-0.5">Input data acuan yang nantinya akan dipanggil di halaman kanvas.</p>
+                <p className="text-xs text-slate-500 mt-0.5">Input data acuan yang otomatis tersinkron ke database online.</p>
               </div>
 
               <form onSubmit={handleAddMaster} className="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6 flex flex-col gap-4">
@@ -385,7 +440,7 @@ export default function App() {
                       onChange={e => updateDivisionTitle(div.id, e.target.value)}
                       className="text-lg font-black text-slate-800 bg-transparent outline-none border-b border-transparent focus:border-blue-500 w-full"
                     />
-                    <button onClick={() => setDivisions(divisions.filter(d => d.id !== div.id))} className="text-slate-300 hover:text-red-500 p-1"><Trash2 className="w-4 h-4" /></button>
+                    <button onClick={() => deleteDivision(div.id)} className="text-slate-300 hover:text-red-500 p-1"><Trash2 className="w-4 h-4" /></button>
                   </div>
 
                   <div className="flex-1 overflow-y-auto pr-1 space-y-3 mb-4">
@@ -395,7 +450,7 @@ export default function App() {
                           <span className="text-[10px] font-black uppercase tracking-wider bg-white/80 px-2 py-0.5 rounded border border-black/10">
                             {config[block.type].label}
                           </span>
-                          <button onClick={() => setDivisions(divisions.map(d => d.id === div.id ? { ...d, blocks: d.blocks.filter(b => b.id !== block.id) } : d))} className="text-black/30 hover:text-red-600">✕</button>
+                          <button onClick={() => deleteBlockFromDivision(div.id, block.id)} className="text-black/30 hover:text-red-600">✕</button>
                         </div>
 
                         <div className="space-y-2 mb-2">
