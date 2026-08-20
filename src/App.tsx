@@ -6,7 +6,7 @@ import {
 
 // === INISIALISASI FIREBASE ===
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyCGsd4ZjETtDkN26tdcYlUeRH2w1tXCRFI",
@@ -18,8 +18,7 @@ const firebaseConfig = {
   measurementId: "G-KPFLZ7314J"
 };
 
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+initializeApp(firebaseConfig);
 
 // === STRUKTUR KATEGORI & HIERARKI ===
 type CategoryType = 'kriteria' | 'jobdesk' | 'stakeholder' | 'program' | 'peralatan' | 'output';
