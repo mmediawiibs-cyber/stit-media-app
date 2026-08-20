@@ -36,12 +36,12 @@ interface CategoryConfig {
 }
 
 const config: Record<CategoryType, CategoryConfig> = {
-  kriteria: { label: '1. Kriteria', col1Label: 'Deskripsi Kriteria', hasCol2: false, isMultiline: true, hasStatus: false, counting: false, color: 'bg-amber-50 border-amber-200 text-amber-900' },
-  jobdesk: { label: '2. Jobdesk', col1Label: 'Nama Jobdesk', hasCol2: true, col2Label: 'Deskripsi Jobdesk', isMultiline: true, hasStatus: false, counting: false, color: 'bg-emerald-50 border-emerald-200 text-emerald-900' },
-  stakeholder: { label: '3. Stakeholder', col1Label: 'Nama Lengkap', hasCol2: false, isMultiline: false, hasStatus: true, counting: true, color: 'bg-indigo-50 border-indigo-200 text-indigo-900' },
-  program: { label: '4. Program', col1Label: 'Nama Program', hasCol2: false, isMultiline: false, hasStatus: true, counting: true, color: 'bg-rose-50 border-rose-200 text-rose-900' },
-  peralatan: { label: '5. Peralatan', col1Label: 'Nama Peralatan', hasCol2: true, col2Label: 'Spesifikasi', isMultiline: true, hasStatus: true, counting: true, color: 'bg-cyan-50 border-cyan-200 text-cyan-900' },
-  output: { label: '6. Output', col1Label: 'Deskripsi Output', hasCol2: false, isMultiline: true, hasStatus: true, counting: true, color: 'bg-orange-50 border-orange-200 text-orange-900' }
+  kriteria: { label: 'Kriteria', col1Label: 'Deskripsi Kriteria', hasCol2: false, isMultiline: true, hasStatus: false, counting: false, color: 'bg-amber-50 border-amber-200 text-amber-900' },
+  jobdesk: { label: 'Jobdesk', col1Label: 'Nama Jobdesk', hasCol2: true, col2Label: 'Deskripsi Jobdesk', isMultiline: true, hasStatus: false, counting: false, color: 'bg-emerald-50 border-emerald-200 text-emerald-900' },
+  stakeholder: { label: 'Stakeholder', col1Label: 'Nama Lengkap', hasCol2: false, isMultiline: false, hasStatus: true, counting: true, color: 'bg-indigo-50 border-indigo-200 text-indigo-900' },
+  program: { label: 'Program', col1Label: 'Nama Program', hasCol2: false, isMultiline: false, hasStatus: true, counting: true, color: 'bg-rose-50 border-rose-200 text-rose-900' },
+  peralatan: { label: 'Peralatan', col1Label: 'Nama Peralatan', hasCol2: true, col2Label: 'Spesifikasi', isMultiline: true, hasStatus: true, counting: true, color: 'bg-cyan-50 border-cyan-200 text-cyan-900' },
+  output: { label: 'Output', col1Label: 'Deskripsi Output', hasCol2: false, isMultiline: true, hasStatus: true, counting: true, color: 'bg-orange-50 border-orange-200 text-orange-900' }
 };
 
 interface MasterItem {
@@ -258,7 +258,7 @@ export default function App() {
 
           <div className="flex items-center gap-2 bg-slate-50 px-4 py-1.5 rounded-full border border-slate-200 shadow-inner">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">STIT Kampus Perintis Media</span>
+            <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">MULTIEDIA STIT</span>
           </div>
 
           <div className="flex gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
