@@ -93,9 +93,13 @@ export default function App() {
   // 2. Simpan data realtime ke Firestore
   const syncToFirestore = async (newMaster: typeof masterData, newDivisions: Division[]) => {
     try {
+      // Membersihkan seluruh nilai undefined agar kompatibel dengan Firestore
+      const cleanMaster = JSON.parse(JSON.stringify(newMaster));
+      const cleanDivisions = JSON.parse(JSON.stringify(newDivisions));
+
       await setDoc(doc(db, "stit_data", "main_state"), {
-        masterData: newMaster,
-        divisions: newDivisions
+        masterData: cleanMaster,
+        divisions: cleanDivisions
       });
     } catch (err) {
       console.error("Gagal sinkron Firestore:", err);
@@ -110,7 +114,7 @@ export default function App() {
     const newItem: MasterItem = {
       id: `item-${Date.now()}`,
       col1: formData.col1,
-      col2: config[activeMasterCategory].hasCol2 ? formData.col2 : undefined,
+      col2: config[activeMasterCategory].hasCol2 ? formData.col2 : '',
       checked: false
     };
 
