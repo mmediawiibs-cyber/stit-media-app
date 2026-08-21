@@ -247,9 +247,11 @@ export default function App() {
       <header className="bg-white border-b border-slate-200 px-6 py-4 shadow-sm">
         <div className="w-full px-4 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">
-            <div className="bg-blue-600 text-white p-2 rounded-xl shadow-md">
-              <Layers className="w-6 h-6" />
-            </div>
+            <img 
+  src="/icons.svg" 
+  alt="Logo STIT Media" 
+  className="w-10 h-10 object-contain rounded-xl"
+/>
             <div>
               <h1 className="text-xl font-black text-slate-900 tracking-wide">STIT MEDIA</h1>
               <p className="text-xs text-slate-500">Dashboard & Management System</p>
