@@ -356,7 +356,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-100 font-sans text-slate-800 pb-12">
-      <header className="bg-white border-b border-slate-200 px-6 py-4 shadow-sm">
+      <header className="bg-gradient-to-r from-[#CCF4FF] via-[#5699F2] to-[#104BE6] border-b border-white/20 px-6 py-4 shadow-md">
         <div className="w-full px-4 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">
             <img
