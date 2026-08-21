@@ -248,10 +248,10 @@ export default function App() {
         <div className="w-full px-4 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">
             <img 
-  src="/icons.svg" 
-  alt="Logo STIT Media" 
-  className="w-10 h-10 object-contain rounded-xl"
-/>
+              src="/icons.svg" 
+              alt="Logo STIT Media" 
+              className="w-10 h-10 object-contain rounded-xl"
+            />
             <div>
               <h1 className="text-xl font-black text-slate-900 tracking-wide">STIT MEDIA</h1>
               <p className="text-xs text-slate-500">Dashboard & Management System</p>
