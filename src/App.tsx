@@ -117,7 +117,9 @@ interface Division {
 }
 
 export default function App() {
-  const [activeTab] = useState<"master" | "canvas" | "diagram">("master");
+  const [activeTab, setActiveTab] = useState<"master" | "canvas" | "diagram">(
+    "master",
+  );
 
   const [masterData, setMasterData] = useState<
     Record<CategoryType, MasterItem[]>
