@@ -355,7 +355,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800 pb-12">
       {/* HEADER / HERO (#011f3f dengan aksen #c79d3a) */}
-      <header className="bg-[#011f3f] border-b-2 border-[#c79d3a]/30 px-6 py-4 shadow-lg">
+      <header className="sticky top-0 z-50 bg-[#011f3f]/95 backdrop-blur-md border-b-2 border-[#c79d3a]/30 px-6 py-4 shadow-lg">
         <div className="w-full px-4 flex flex-col md:flex-row justify-between items-center gap-4">
           {/* Logo & Judul dengan Indikator Online di Sudut Logo */}
           <div className="flex items-center gap-3">
