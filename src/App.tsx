@@ -421,7 +421,7 @@ export default function App() {
               href="https://mmedia-wiibs.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 bg-[#c79d3a] hover:bg-[#b58c2f] text-slate-950 rounded-xl text-sm font-black shadow-md transition-all border border-[#eced8f]"
+              className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-slate-100 text-[#011f3f] rounded-xl text-sm font-bold shadow-md transition-all border border-white/50"
             >
               <span>Task</span>
             </a>
@@ -934,7 +934,7 @@ export default function App() {
                         return (
                           <div
                             key={cat}
-                            className="flex items-center gap-3 bg-[#eced8f]/20 p-3 rounded-xl border border-[#eced8f]"
+                            className="flex items-center gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100"
                           >
                             <span
                               className={`w-4 h-4 rounded-full ${barColor} shadow-sm shrink-0`}
