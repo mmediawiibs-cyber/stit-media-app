@@ -361,7 +361,7 @@ export default function App() {
           <div className="flex items-center gap-3">
             <div className="relative inline-block">
               <img
-                src="/logostit.png"
+                src="/logostit.svg"
                 alt="Logo STIT Media"
                 className="w-10 h-10 object-contain rounded-xl bg-white/80 p-1 shadow-sm"
               />
