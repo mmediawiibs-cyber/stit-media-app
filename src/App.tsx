@@ -382,13 +382,14 @@ export default function App() {
           </div>
 
           {/* Navigasi Menu & Tombol External */}
+          {/* Navigasi Utama + Tombol Task */}
           <div className="flex flex-wrap items-center gap-3">
             <div className="flex gap-1 bg-[#022b57] p-1 rounded-xl border border-[#c79d3a]/30 shadow-inner">
               <button
                 onClick={() => setActiveTab("master")}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${
                   activeTab === "master"
-                    ? "bg-[#c79d3a] text-slate-950 shadow-md"
+                    ? "bg-white text-[#011f3f] shadow-md"
                     : "text-white/80 hover:bg-white/10 hover:text-white"
                 }`}
               >
@@ -398,7 +399,7 @@ export default function App() {
                 onClick={() => setActiveTab("canvas")}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${
                   activeTab === "canvas"
-                    ? "bg-[#c79d3a] text-slate-950 shadow-md"
+                    ? "bg-white text-[#011f3f] shadow-md"
                     : "text-white/80 hover:bg-white/10 hover:text-white"
                 }`}
               >
@@ -408,7 +409,7 @@ export default function App() {
                 onClick={() => setActiveTab("diagram")}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${
                   activeTab === "diagram"
-                    ? "bg-[#c79d3a] text-slate-950 shadow-md"
+                    ? "bg-white text-[#011f3f] shadow-md"
                     : "text-white/80 hover:bg-white/10 hover:text-white"
                 }`}
               >
@@ -475,11 +476,11 @@ export default function App() {
               {/* Form Input Box (#eced8f background) */}
               <form
                 onSubmit={handleAddMaster}
-                className="bg-[#eced8f]/20 p-4 rounded-xl border border-[#eced8f] mb-6 flex flex-col gap-4"
+                className="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6 flex flex-col gap-4"
               >
                 <div className="flex flex-col md:flex-row gap-4">
                   <div className="flex-1">
-                    <label className="block text-xs font-bold text-[#011f3f] uppercase mb-1">
+                    <label className="block text-xs font-bold text-slate-600 uppercase mb-1">
                       {config[activeMasterCategory].col1Label}
                     </label>
                     {config[activeMasterCategory].isMultiline ? (
@@ -507,7 +508,7 @@ export default function App() {
 
                   {config[activeMasterCategory].hasCol2 && (
                     <div className="flex-1">
-                      <label className="block text-xs font-bold text-[#011f3f] uppercase mb-1">
+                      <label className="block text-xs font-bold text-slate-600 uppercase mb-1">
                         {config[activeMasterCategory].col2Label}
                       </label>
                       <textarea
@@ -536,7 +537,7 @@ export default function App() {
               <div className="flex-1 overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-[#eced8f] text-[#011f3f] text-xs font-black uppercase tracking-wider border-b border-[#c79d3a]/30">
+                    <tr className="bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-wider">
                       <th className="p-3.5 rounded-l-xl">
                         {config[activeMasterCategory].col1Label}
                       </th>
@@ -838,7 +839,7 @@ export default function App() {
                     onChange={(e) =>
                       addBlockToDivision(div.id, e.target.value as CategoryType)
                     }
-                    className="w-full p-2.5 bg-[#eced8f]/20 border border-[#eced8f] rounded-xl text-xs font-bold text-slate-700 outline-none cursor-pointer text-center"
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-600 outline-none cursor-pointer text-center"
                   >
                     <option value="" disabled>
                       + Tambah Blok Kategori...
