@@ -168,7 +168,6 @@ export default function App() {
     newDivisions: Division[],
   ) => {
     try {
-      // Membersihkan seluruh nilai undefined agar kompatibel dengan Firestore
       const cleanMaster = JSON.parse(JSON.stringify(newMaster));
       const cleanDivisions = JSON.parse(JSON.stringify(newDivisions));
 
@@ -354,52 +353,64 @@ export default function App() {
     totalItems > 0 ? Math.round((checkedItems / totalItems) * 100) : 0;
 
   return (
-    <div className="min-h-screen bg-slate-100 font-sans text-slate-800 pb-12">
-      <header className="bg-gradient-to-r from-[#CCF4FF] via-[#5699F2] to-[#104BE6] border-b border-white/20 px-6 py-4 shadow-md">
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-800 pb-12">
+      {/* HEADER / HERO (#011f3f dengan aksen #c79d3a) */}
+      <header className="bg-[#011f3f] border-b-2 border-[#c79d3a]/30 px-6 py-4 shadow-lg">
         <div className="w-full px-4 flex flex-col md:flex-row justify-between items-center gap-4">
-          {/* Logo dengan Status Online di Sudut Kanan Bawah */}
+          {/* Logo & Judul dengan Indikator Online di Sudut Logo */}
           <div className="flex items-center gap-3">
             <div className="relative inline-block">
               <img
-                src="/logostit.png"
+                src="/logostit.svg"
                 alt="Logo STIT Media"
-                className="w-10 h-10 object-contain rounded-xl bg-white/80 p-1 shadow-sm"
+                className="w-10 h-10 object-contain rounded-xl bg-white p-1 shadow-sm border border-[#c79d3a]/30"
               />
-              {/* Dot Status Hijau ala Profil Online */}
               <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-white"></span>
+                <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-[#011f3f]"></span>
               </span>
             </div>
 
             <div>
-              <h1 className="text-xl font-black text-slate-900 tracking-wide leading-tight">
+              <h1 className="text-xl font-black text-white tracking-wider leading-tight">
                 STIT MEDIA
               </h1>
-              <p className="text-xs text-blue-900/80 font-medium">
+              <p className="text-xs text-[#c79d3a] font-semibold">
                 Dashboard & Management System
               </p>
             </div>
           </div>
 
-          {/* Navigasi Utama + Tombol Task */}
+          {/* Navigasi Menu & Tombol External */}
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-sm">
+            <div className="flex gap-1 bg-[#022b57] p-1 rounded-xl border border-[#c79d3a]/30 shadow-inner">
               <button
                 onClick={() => setActiveTab("master")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === "master" ? "bg-blue-600 text-white shadow-md" : "text-slate-600 hover:bg-white"}`}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${
+                  activeTab === "master"
+                    ? "bg-[#c79d3a] text-slate-950 shadow-md"
+                    : "text-white/80 hover:bg-white/10 hover:text-white"
+                }`}
               >
                 <Database className="w-4 h-4" /> Master Data
               </button>
               <button
                 onClick={() => setActiveTab("canvas")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === "canvas" ? "bg-blue-600 text-white shadow-md" : "text-slate-600 hover:bg-white"}`}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${
+                  activeTab === "canvas"
+                    ? "bg-[#c79d3a] text-slate-950 shadow-md"
+                    : "text-white/80 hover:bg-white/10 hover:text-white"
+                }`}
               >
                 <FolderKanban className="w-4 h-4" /> Kanvas Modul
               </button>
               <button
                 onClick={() => setActiveTab("diagram")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === "diagram" ? "bg-blue-600 text-white shadow-md" : "text-slate-600 hover:bg-white"}`}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${
+                  activeTab === "diagram"
+                    ? "bg-[#c79d3a] text-slate-950 shadow-md"
+                    : "text-white/80 hover:bg-white/10 hover:text-white"
+                }`}
               >
                 <BarChart3 className="w-4 h-4" /> Diagram & Progress
               </button>
@@ -409,7 +420,7 @@ export default function App() {
               href="https://mmedia-wiibs.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-xl text-sm font-bold shadow-sm transition-all"
+              className="flex items-center gap-2 px-4 py-2 bg-[#c79d3a] hover:bg-[#b58c2f] text-slate-950 rounded-xl text-sm font-black shadow-md transition-all border border-[#eced8f]"
             >
               <span>Task</span>
             </a>
@@ -418,21 +429,31 @@ export default function App() {
       </header>
 
       <main className="w-full p-6">
+        {/* ================= TAB MASTER DATA ================= */}
         {activeTab === "master" && (
           <div className="flex flex-col lg:flex-row gap-6">
+            {/* Sidebar Kategori */}
             <div className="w-full lg:w-1/4 bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-1.5">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 px-3 mb-2">
+              <h2 className="text-xs font-black uppercase tracking-wider text-slate-400 px-3 mb-2">
                 Kategori Induk
               </h2>
               {(Object.keys(config) as CategoryType[]).map((key) => (
                 <button
                   key={key}
                   onClick={() => setActiveMasterCategory(key)}
-                  className={`text-left px-4 py-3 rounded-xl font-semibold text-sm transition-all flex justify-between items-center ${activeMasterCategory === key ? "bg-blue-600 text-white shadow-md shadow-blue-200" : "text-slate-600 hover:bg-slate-50"}`}
+                  className={`text-left px-4 py-3 rounded-xl font-bold text-sm transition-all flex justify-between items-center ${
+                    activeMasterCategory === key
+                      ? "bg-[#011f3f] text-[#c79d3a] shadow-md border border-[#c79d3a]/30"
+                      : "text-slate-600 hover:bg-[#eced8f]/20 hover:text-slate-900"
+                  }`}
                 >
                   <span>{config[key].label}</span>
                   <span
-                    className={`text-xs px-2 py-0.5 rounded-full ${activeMasterCategory === key ? "bg-blue-700 text-white" : "bg-slate-100 text-slate-600"}`}
+                    className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${
+                      activeMasterCategory === key
+                        ? "bg-[#c79d3a] text-slate-950"
+                        : "bg-[#eced8f]/50 text-slate-800"
+                    }`}
                   >
                     {masterData[key].length}
                   </span>
@@ -440,9 +461,10 @@ export default function App() {
               ))}
             </div>
 
+            {/* Form Input & Tabel Master */}
             <div className="flex-1 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
               <div className="border-b border-slate-100 pb-4 mb-6">
-                <h2 className="text-xl font-black text-slate-800">
+                <h2 className="text-xl font-black text-[#011f3f]">
                   Setup: {config[activeMasterCategory].label}
                 </h2>
                 <p className="text-xs text-slate-500 mt-0.5">
@@ -450,13 +472,14 @@ export default function App() {
                 </p>
               </div>
 
+              {/* Form Input Box (#eced8f background) */}
               <form
                 onSubmit={handleAddMaster}
-                className="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6 flex flex-col gap-4"
+                className="bg-[#eced8f]/20 p-4 rounded-xl border border-[#eced8f] mb-6 flex flex-col gap-4"
               >
                 <div className="flex flex-col md:flex-row gap-4">
                   <div className="flex-1">
-                    <label className="block text-xs font-bold text-slate-600 uppercase mb-1">
+                    <label className="block text-xs font-bold text-[#011f3f] uppercase mb-1">
                       {config[activeMasterCategory].col1Label}
                     </label>
                     {config[activeMasterCategory].isMultiline ? (
@@ -467,7 +490,7 @@ export default function App() {
                         onChange={(e) =>
                           setFormData({ ...formData, col1: e.target.value })
                         }
-                        className="w-full p-3 bg-white border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none resize-none shadow-sm"
+                        className="w-full p-3 bg-white border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-[#c79d3a] outline-none resize-none shadow-sm"
                       />
                     ) : (
                       <input
@@ -477,14 +500,14 @@ export default function App() {
                         onChange={(e) =>
                           setFormData({ ...formData, col1: e.target.value })
                         }
-                        className="w-full p-3 bg-white border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none shadow-sm"
+                        className="w-full p-3 bg-white border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-[#c79d3a] outline-none shadow-sm"
                       />
                     )}
                   </div>
 
                   {config[activeMasterCategory].hasCol2 && (
                     <div className="flex-1">
-                      <label className="block text-xs font-bold text-slate-600 uppercase mb-1">
+                      <label className="block text-xs font-bold text-[#011f3f] uppercase mb-1">
                         {config[activeMasterCategory].col2Label}
                       </label>
                       <textarea
@@ -494,7 +517,7 @@ export default function App() {
                         onChange={(e) =>
                           setFormData({ ...formData, col2: e.target.value })
                         }
-                        className="w-full p-3 bg-white border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none resize-none shadow-sm"
+                        className="w-full p-3 bg-white border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-[#c79d3a] outline-none resize-none shadow-sm"
                       />
                     </div>
                   )}
@@ -502,17 +525,18 @@ export default function App() {
                 <div className="flex justify-end">
                   <button
                     type="submit"
-                    className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold shadow-md transition-all flex items-center gap-2"
+                    className="px-6 py-2.5 bg-[#011f3f] hover:bg-[#022b57] text-[#c79d3a] border border-[#c79d3a]/50 rounded-xl text-sm font-black shadow-md transition-all flex items-center gap-2"
                   >
                     <Plus className="w-4 h-4" /> Simpan Data
                   </button>
                 </div>
               </form>
 
+              {/* Tabel dengan Header Berwarna #eced8f */}
               <div className="flex-1 overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-wider">
+                    <tr className="bg-[#eced8f] text-[#011f3f] text-xs font-black uppercase tracking-wider border-b border-[#c79d3a]/30">
                       <th className="p-3.5 rounded-l-xl">
                         {config[activeMasterCategory].col1Label}
                       </th>
@@ -543,7 +567,7 @@ export default function App() {
                       masterData[activeMasterCategory].map((item) => (
                         <tr
                           key={item.id}
-                          className="hover:bg-slate-50 transition-colors"
+                          className="hover:bg-[#eced8f]/10 transition-colors"
                         >
                           <td className="p-3.5 text-slate-800 font-medium">
                             {editingId === item.id ? (
@@ -596,7 +620,11 @@ export default function App() {
                                     item.id,
                                   )
                                 }
-                                className={`px-3 py-1 rounded-full text-xs font-bold transition-all flex items-center justify-center gap-1.5 mx-auto ${item.checked ? "bg-emerald-100 text-emerald-800 border border-emerald-300" : "bg-slate-100 text-slate-500"}`}
+                                className={`px-3 py-1 rounded-full text-xs font-bold transition-all flex items-center justify-center gap-1.5 mx-auto ${
+                                  item.checked
+                                    ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
+                                    : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                                }`}
                               >
                                 {item.checked ? (
                                   <Check className="w-3.5 h-3.5 text-emerald-600" />
@@ -615,14 +643,14 @@ export default function App() {
                                   onClick={() =>
                                     saveEdit(activeMasterCategory, item.id)
                                   }
-                                  className="px-3 py-1 bg-emerald-600 text-white rounded-lg text-xs font-bold"
+                                  className="px-3 py-1 bg-emerald-600 text-white rounded-lg text-xs font-bold shadow-sm"
                                 >
                                   Simpan
                                 </button>
                               ) : (
                                 <button
                                   onClick={() => startEdit(item)}
-                                  className="p-1.5 bg-slate-100 hover:bg-blue-50 text-slate-600 rounded-lg"
+                                  className="p-1.5 bg-slate-100 hover:bg-[#eced8f] text-slate-600 rounded-lg transition-colors"
                                 >
                                   <Edit2 className="w-4 h-4" />
                                 </button>
@@ -634,7 +662,7 @@ export default function App() {
                                     item.id,
                                   )
                                 }
-                                className="p-1.5 bg-slate-100 hover:bg-red-50 text-slate-600 rounded-lg"
+                                className="p-1.5 bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-red-600 rounded-lg transition-colors"
                               >
                                 <Trash2 className="w-4 h-4" />
                               </button>
@@ -650,15 +678,16 @@ export default function App() {
           </div>
         )}
 
+        {/* ================= TAB KANVAS MODUL ================= */}
         {activeTab === "canvas" && (
           <div>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-black text-slate-800">
+              <h2 className="text-xl font-black text-[#011f3f]">
                 Peta Modular Divisi
               </h2>
               <button
                 onClick={addDivision}
-                className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold shadow-md flex items-center gap-2"
+                className="px-5 py-2.5 bg-[#011f3f] hover:bg-[#022b57] text-[#c79d3a] border border-[#c79d3a]/50 rounded-xl text-sm font-black shadow-md flex items-center gap-2"
               >
                 <Plus className="w-4 h-4" /> Tambah Divisi Baru
               </button>
@@ -686,7 +715,7 @@ export default function App() {
                       onChange={(e) =>
                         updateDivisionTitle(div.id, e.target.value)
                       }
-                      className="text-lg font-black text-slate-800 bg-transparent outline-none border-b border-transparent focus:border-blue-500 w-full"
+                      className="text-lg font-black text-[#011f3f] bg-transparent outline-none border-b border-transparent focus:border-[#c79d3a] w-full"
                     />
                     <button
                       onClick={() => deleteDivision(div.id)}
@@ -703,7 +732,7 @@ export default function App() {
                         className={`p-3.5 rounded-xl border ${config[block.type].color} relative shadow-sm`}
                       >
                         <div className="flex justify-between items-center mb-2">
-                          <span className="text-[10px] font-black uppercase tracking-wider bg-white/80 px-2 py-0.5 rounded border border-black/10">
+                          <span className="text-[10px] font-black uppercase tracking-wider bg-white/90 px-2 py-0.5 rounded border border-black/10">
                             {config[block.type].label}
                           </span>
                           <button
@@ -741,14 +770,14 @@ export default function App() {
                                 ? "Selesai/Sudah berjalan"
                                 : "Belum";
                               badgeColor = item.checked
-                                ? "bg-blue-100 text-blue-800"
+                                ? "bg-[#011f3f] text-[#c79d3a]"
                                 : "bg-slate-200 text-slate-600";
                             }
 
                             return (
                               <div
                                 key={itemId}
-                                className="bg-white/90 p-2.5 rounded-lg border border-black/10 text-xs flex justify-between items-start gap-2 shadow-sm"
+                                className="bg-white/95 p-2.5 rounded-lg border border-black/10 text-xs flex justify-between items-start gap-2 shadow-sm"
                               >
                                 <div>
                                   <span className="font-bold text-slate-800 block whitespace-pre-wrap">
@@ -787,7 +816,7 @@ export default function App() {
                           onChange={(e) =>
                             selectItemForBlock(div.id, block.id, e.target.value)
                           }
-                          className="w-full p-2 bg-white/80 border rounded-lg text-xs outline-none cursor-pointer"
+                          className="w-full p-2 bg-white/90 border rounded-lg text-xs outline-none cursor-pointer"
                         >
                           <option value="" disabled>
                             + Pilih dari Master Data...
@@ -809,7 +838,7 @@ export default function App() {
                     onChange={(e) =>
                       addBlockToDivision(div.id, e.target.value as CategoryType)
                     }
-                    className="w-full p-2.5 bg-slate-50 border rounded-xl text-xs font-bold text-slate-600 outline-none cursor-pointer text-center"
+                    className="w-full p-2.5 bg-[#eced8f]/20 border border-[#eced8f] rounded-xl text-xs font-bold text-slate-700 outline-none cursor-pointer text-center"
                   >
                     <option value="" disabled>
                       + Tambah Blok Kategori...
@@ -826,9 +855,9 @@ export default function App() {
           </div>
         )}
 
+        {/* ================= TAB DIAGRAM & PROGRESS ================= */}
         {activeTab === "diagram" &&
           (() => {
-            // --- KALKULASI DOUGHNUT CHART ---
             let currentPercent = 0;
             const gradientStops: string[] = [];
 
@@ -836,7 +865,6 @@ export default function App() {
               const checked = masterData[cat].filter((i) => i.checked).length;
               if (checked > 0 && totalItems > 0) {
                 const pct = (checked / totalItems) * 100;
-                // Kode warna HEX ini sama dengan warna Tailwind (indigo, rose, cyan, orange)
                 const color =
                   cat === "stakeholder"
                     ? "#6366f1"
@@ -853,7 +881,6 @@ export default function App() {
               }
             });
 
-            // Sisa yang belum selesai (warna abu-abu)
             if (currentPercent < 100) {
               gradientStops.push(`#f1f5f9 ${currentPercent}% 100%`);
             }
@@ -862,27 +889,24 @@ export default function App() {
 
             return (
               <div className="space-y-6">
-                {/* --- BAGIAN 1: TOTAL PROGRESS (DOUGHNUT CHART) --- */}
+                {/* Total Progress Doughnut */}
                 <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row items-center gap-8">
-                  {/* Visual Doughnut Chart */}
                   <div
                     className="relative w-48 h-48 shrink-0 rounded-full flex items-center justify-center shadow-sm"
                     style={{ background: `conic-gradient(${conicString})` }}
                   >
-                    {/* Lingkaran Putih di Tengah (Membuat Efek Donat/Bolong) */}
                     <div className="w-36 h-36 bg-white rounded-full flex flex-col items-center justify-center shadow-inner">
-                      <span className="text-4xl font-black text-slate-800">
+                      <span className="text-4xl font-black text-[#011f3f]">
                         {overallProgress}%
                       </span>
-                      <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">
+                      <span className="text-xs font-bold text-[#c79d3a] uppercase tracking-widest mt-1">
                         Selesai
                       </span>
                     </div>
                   </div>
 
-                  {/* Teks & Keterangan (Legend Kanan) */}
                   <div className="flex-1 w-full text-center md:text-left">
-                    <h2 className="text-2xl font-black text-slate-800">
+                    <h2 className="text-2xl font-black text-[#011f3f]">
                       Ringkasan Capaian Keseluruhan
                     </h2>
                     <p className="text-sm text-slate-500 mt-1 mb-6">
@@ -897,7 +921,6 @@ export default function App() {
                         ).length;
                         const total = masterData[cat].length;
 
-                        // Sesuaikan warna titik legend
                         const barColor =
                           cat === "stakeholder"
                             ? "bg-indigo-500"
@@ -910,16 +933,16 @@ export default function App() {
                         return (
                           <div
                             key={cat}
-                            className="flex items-center gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100"
+                            className="flex items-center gap-3 bg-[#eced8f]/20 p-3 rounded-xl border border-[#eced8f]"
                           >
                             <span
                               className={`w-4 h-4 rounded-full ${barColor} shadow-sm shrink-0`}
                             ></span>
                             <div className="flex-1 text-left">
-                              <span className="text-xs font-bold text-slate-700 block uppercase">
+                              <span className="text-xs font-bold text-[#011f3f] block uppercase">
                                 {config[cat].label}
                               </span>
-                              <span className="text-[10px] font-semibold text-slate-500">
+                              <span className="text-[10px] font-semibold text-slate-600">
                                 {checked} dari {total} selesai
                               </span>
                             </div>
@@ -930,7 +953,7 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* --- BAGIAN 2: PROGRESS PER KATEGORI --- */}
+                {/* Progress Per Kategori */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   {countingCategories.map((cat) => {
                     const items = masterData[cat];
@@ -940,7 +963,6 @@ export default function App() {
                         ? Math.round((checkedCount / items.length) * 100)
                         : 0;
 
-                    // Setel Warna Khusus untuk Tiap Kategori
                     const barColor =
                       cat === "stakeholder"
                         ? "bg-indigo-500"
@@ -966,10 +988,10 @@ export default function App() {
                       >
                         <div>
                           <div className="flex justify-between items-center mb-3">
-                            <h3 className="font-extrabold text-slate-800 text-sm uppercase tracking-wider">
+                            <h3 className="font-extrabold text-[#011f3f] text-sm uppercase tracking-wider">
                               {config[cat].label}
                             </h3>
-                            <span className="text-xs font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">
+                            <span className="text-xs font-bold bg-[#eced8f]/50 text-slate-800 px-2 py-0.5 rounded-full">
                               {checkedCount} / {items.length}
                             </span>
                           </div>
