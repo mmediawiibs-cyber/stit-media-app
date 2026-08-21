@@ -357,30 +357,34 @@ export default function App() {
     <div className="min-h-screen bg-slate-100 font-sans text-slate-800 pb-12">
       <header className="bg-gradient-to-r from-[#CCF4FF] via-[#5699F2] to-[#104BE6] border-b border-white/20 px-6 py-4 shadow-md">
         <div className="w-full px-4 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-2">
-            <img
-              src="/icons.svg"
-              alt="Logo STIT Media"
-              className="w-10 h-10 object-contain rounded-xl"
-            />
+          {/* Logo dengan Status Online di Sudut Kanan Bawah */}
+          <div className="flex items-center gap-3">
+            <div className="relative inline-block">
+              <img
+                src="/icons.svg"
+                alt="Logo STIT Media"
+                className="w-10 h-10 object-contain rounded-xl bg-white/80 p-1 shadow-sm"
+              />
+              {/* Dot Status Hijau ala Profil Online */}
+              <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-white"></span>
+              </span>
+            </div>
+
             <div>
-              <h1 className="text-xl font-black text-slate-900 tracking-wide">
+              <h1 className="text-xl font-black text-slate-900 tracking-wide leading-tight">
                 STIT MEDIA
               </h1>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-blue-900/80 font-medium">
                 Dashboard & Management System
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 bg-slate-50 px-4 py-1.5 rounded-full border border-slate-200 shadow-inner">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-              On
-            </span>
-          </div>
+          {/* Navigasi Utama + Tombol Task */}
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
+            <div className="flex gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-sm">
               <button
                 onClick={() => setActiveTab("master")}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === "master" ? "bg-blue-600 text-white shadow-md" : "text-slate-600 hover:bg-white"}`}
@@ -400,6 +404,7 @@ export default function App() {
                 <BarChart3 className="w-4 h-4" /> Diagram & Progress
               </button>
             </div>
+
             <a
               href="https://mmedia-wiibs.vercel.app/"
               target="_blank"
