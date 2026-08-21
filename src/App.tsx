@@ -284,14 +284,14 @@ export default function App() {
             </button>
           </div>
           <a
-            href="https://mmedia-wiibs.vercel.app/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-xl text-sm font-bold shadow-sm"
-          >
-            Portal MMedia
-            <ExternalLink className="w-4 h-4 text-slate-400" />
-          </a>
+              href="https://mmedia-wiibs.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-xl text-sm font-bold shadow-sm transition-all"
+            >
+              <span>Portal MMedia</span>
+              <ExternalLink className="w-4 h-4 text-blue-600" />
+            </a>
         </div>
       </header>
 
