@@ -245,7 +245,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-100 font-sans text-slate-800 pb-12">
       <header className="bg-white border-b border-slate-200 px-6 py-4 shadow-sm">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="w-full px-4 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">
             <div className="bg-blue-600 text-white p-2 rounded-xl shadow-md">
               <Layers className="w-6 h-6" />
@@ -284,7 +284,7 @@ export default function App() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto p-6">
+      <main className="w-full p-6">
         {activeTab === 'master' && (
           <div className="flex flex-col lg:flex-row gap-6">
             <div className="w-full lg:w-1/4 bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-1.5">
