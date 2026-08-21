@@ -1,8 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  FolderKanban, Database, BarChart3, Plus, Trash2, Edit2, 
-  Circle, Layers, Check, ExternalLink 
-} from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import {
+  FolderKanban,
+  Database,
+  BarChart3,
+  Plus,
+  Trash2,
+  Edit2,
+  Circle,
+  Layers,
+  Check,
+  ExternalLink,
+} from "lucide-react";
 
 // === FIREBASE FIRESTORE SETUP ===
 import { initializeApp } from "firebase/app";
@@ -15,14 +23,20 @@ const firebaseConfig = {
   storageBucket: "stit-media-db.firebasestorage.app",
   messagingSenderId: "320419607356",
   appId: "1:320419607356:web:58c126045d9ca94409e439",
-  measurementId: "G-KPFLZ7314J"
+  measurementId: "G-KPFLZ7314J",
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // === STRUKTUR KATEGORI & HIERARKI ===
-type CategoryType = 'kriteria' | 'jobdesk' | 'stakeholder' | 'program' | 'peralatan' | 'output';
+type CategoryType =
+  | "kriteria"
+  | "jobdesk"
+  | "stakeholder"
+  | "program"
+  | "peralatan"
+  | "output";
 
 interface CategoryConfig {
   label: string;
@@ -36,12 +50,62 @@ interface CategoryConfig {
 }
 
 const config: Record<CategoryType, CategoryConfig> = {
-  kriteria: { label: 'Kriteria', col1Label: 'Deskripsi Kriteria', hasCol2: false, isMultiline: true, hasStatus: false, counting: false, color: 'bg-amber-50 border-amber-200 text-amber-900' },
-  jobdesk: { label: 'Jobdesk', col1Label: 'Nama Jobdesk', hasCol2: true, col2Label: 'Deskripsi Jobdesk', isMultiline: true, hasStatus: false, counting: false, color: 'bg-emerald-50 border-emerald-200 text-emerald-900' },
-  stakeholder: { label: 'Stakeholder', col1Label: 'Nama Lengkap', hasCol2: false, isMultiline: false, hasStatus: true, counting: true, color: 'bg-indigo-50 border-indigo-200 text-indigo-900' },
-  program: { label: 'Program', col1Label: 'Nama Program', hasCol2: false, isMultiline: false, hasStatus: true, counting: true, color: 'bg-rose-50 border-rose-200 text-rose-900' },
-  peralatan: { label: 'Peralatan', col1Label: 'Nama Peralatan', hasCol2: true, col2Label: 'Spesifikasi', isMultiline: true, hasStatus: true, counting: true, color: 'bg-cyan-50 border-cyan-200 text-cyan-900' },
-  output: { label: 'Output', col1Label: 'Deskripsi Output', hasCol2: false, isMultiline: true, hasStatus: true, counting: true, color: 'bg-orange-50 border-orange-200 text-orange-900' }
+  kriteria: {
+    label: "Kriteria",
+    col1Label: "Deskripsi Kriteria",
+    hasCol2: false,
+    isMultiline: true,
+    hasStatus: false,
+    counting: false,
+    color: "bg-amber-50 border-amber-200 text-amber-900",
+  },
+  jobdesk: {
+    label: "Jobdesk",
+    col1Label: "Nama Jobdesk",
+    hasCol2: true,
+    col2Label: "Deskripsi Jobdesk",
+    isMultiline: true,
+    hasStatus: false,
+    counting: false,
+    color: "bg-emerald-50 border-emerald-200 text-emerald-900",
+  },
+  stakeholder: {
+    label: "Stakeholder",
+    col1Label: "Nama Lengkap",
+    hasCol2: false,
+    isMultiline: false,
+    hasStatus: true,
+    counting: true,
+    color: "bg-indigo-50 border-indigo-200 text-indigo-900",
+  },
+  program: {
+    label: "Program",
+    col1Label: "Nama Program",
+    hasCol2: false,
+    isMultiline: false,
+    hasStatus: true,
+    counting: true,
+    color: "bg-rose-50 border-rose-200 text-rose-900",
+  },
+  peralatan: {
+    label: "Peralatan",
+    col1Label: "Nama Peralatan",
+    hasCol2: true,
+    col2Label: "Spesifikasi",
+    isMultiline: true,
+    hasStatus: true,
+    counting: true,
+    color: "bg-cyan-50 border-cyan-200 text-cyan-900",
+  },
+  output: {
+    label: "Output",
+    col1Label: "Deskripsi Output",
+    hasCol2: false,
+    isMultiline: true,
+    hasStatus: true,
+    counting: true,
+    color: "bg-orange-50 border-orange-200 text-orange-900",
+  },
 };
 
 interface MasterItem {
@@ -64,17 +128,27 @@ interface Division {
 }
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'master' | 'canvas' | 'diagram'>('master');
-  
-  const [masterData, setMasterData] = useState<Record<CategoryType, MasterItem[]>>({
-    kriteria: [], jobdesk: [], stakeholder: [], program: [], peralatan: [], output: []
+  const [activeTab, setActiveTab] = useState<"master" | "canvas" | "diagram">(
+    "master",
+  );
+
+  const [masterData, setMasterData] = useState<
+    Record<CategoryType, MasterItem[]>
+  >({
+    kriteria: [],
+    jobdesk: [],
+    stakeholder: [],
+    program: [],
+    peralatan: [],
+    output: [],
   });
 
-  const [activeMasterCategory, setActiveMasterCategory] = useState<CategoryType>('kriteria');
-  const [formData, setFormData] = useState({ col1: '', col2: '' });
-  
+  const [activeMasterCategory, setActiveMasterCategory] =
+    useState<CategoryType>("kriteria");
+  const [formData, setFormData] = useState({ col1: "", col2: "" });
+
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editFormData, setEditFormData] = useState({ col1: '', col2: '' });
+  const [editFormData, setEditFormData] = useState({ col1: "", col2: "" });
 
   const [divisions, setDivisions] = useState<Division[]>([]);
 
@@ -91,7 +165,10 @@ export default function App() {
   }, []);
 
   // 2. Simpan data realtime ke Firestore
-  const syncToFirestore = async (newMaster: typeof masterData, newDivisions: Division[]) => {
+  const syncToFirestore = async (
+    newMaster: typeof masterData,
+    newDivisions: Division[],
+  ) => {
     try {
       // Membersihkan seluruh nilai undefined agar kompatibel dengan Firestore
       const cleanMaster = JSON.parse(JSON.stringify(newMaster));
@@ -99,7 +176,7 @@ export default function App() {
 
       await setDoc(doc(db, "stit_data", "main_state"), {
         masterData: cleanMaster,
-        divisions: cleanDivisions
+        divisions: cleanDivisions,
       });
     } catch (err) {
       console.error("Gagal sinkron Firestore:", err);
@@ -114,23 +191,25 @@ export default function App() {
     const newItem: MasterItem = {
       id: `item-${Date.now()}`,
       col1: formData.col1,
-      col2: config[activeMasterCategory].hasCol2 ? formData.col2 : '',
-      checked: false
+      col2: config[activeMasterCategory].hasCol2 ? formData.col2 : "",
+      checked: false,
     };
 
     const updated = {
       ...masterData,
-      [activeMasterCategory]: [...masterData[activeMasterCategory], newItem]
+      [activeMasterCategory]: [...masterData[activeMasterCategory], newItem],
     };
     setMasterData(updated);
     syncToFirestore(updated, divisions);
-    setFormData({ col1: '', col2: '' });
+    setFormData({ col1: "", col2: "" });
   };
 
   const handleToggleCheck = (category: CategoryType, id: string) => {
     const updated = {
       ...masterData,
-      [category]: masterData[category].map(item => item.id === id ? { ...item, checked: !item.checked } : item)
+      [category]: masterData[category].map((item) =>
+        item.id === id ? { ...item, checked: !item.checked } : item,
+      ),
     };
     setMasterData(updated);
     syncToFirestore(updated, divisions);
@@ -139,7 +218,7 @@ export default function App() {
   const handleDeleteMaster = (category: CategoryType, id: string) => {
     const updated = {
       ...masterData,
-      [category]: masterData[category].filter(item => item.id !== id)
+      [category]: masterData[category].filter((item) => item.id !== id),
     };
     setMasterData(updated);
     syncToFirestore(updated, divisions);
@@ -147,13 +226,17 @@ export default function App() {
 
   const startEdit = (item: MasterItem) => {
     setEditingId(item.id);
-    setEditFormData({ col1: item.col1, col2: item.col2 || '' });
+    setEditFormData({ col1: item.col1, col2: item.col2 || "" });
   };
 
   const saveEdit = (category: CategoryType, id: string) => {
     const updated = {
       ...masterData,
-      [category]: masterData[category].map(item => item.id === id ? { ...item, col1: editFormData.col1, col2: editFormData.col2 } : item)
+      [category]: masterData[category].map((item) =>
+        item.id === id
+          ? { ...item, col1: editFormData.col1, col2: editFormData.col2 }
+          : item,
+      ),
     };
     setMasterData(updated);
     syncToFirestore(updated, divisions);
@@ -162,27 +245,36 @@ export default function App() {
 
   // Handler Kanvas
   const addDivision = () => {
-    const updated = [...divisions, { id: `div-${Date.now()}`, title: 'Divisi Baru', blocks: [] }];
+    const updated = [
+      ...divisions,
+      { id: `div-${Date.now()}`, title: "Divisi Baru", blocks: [] },
+    ];
     setDivisions(updated);
     syncToFirestore(masterData, updated);
   };
 
   const updateDivisionTitle = (id: string, title: string) => {
-    const updated = divisions.map(d => d.id === id ? { ...d, title } : d);
+    const updated = divisions.map((d) => (d.id === id ? { ...d, title } : d));
     setDivisions(updated);
     syncToFirestore(masterData, updated);
   };
 
   const deleteDivision = (id: string) => {
-    const updated = divisions.filter(d => d.id !== id);
+    const updated = divisions.filter((d) => d.id !== id);
     setDivisions(updated);
     syncToFirestore(masterData, updated);
   };
 
   const addBlockToDivision = (divId: string, type: CategoryType) => {
-    const updated = divisions.map(d => {
+    const updated = divisions.map((d) => {
       if (d.id === divId) {
-        return { ...d, blocks: [...d.blocks, { id: `block-${Date.now()}`, type, selectedIds: [] }] };
+        return {
+          ...d,
+          blocks: [
+            ...d.blocks,
+            { id: `block-${Date.now()}`, type, selectedIds: [] },
+          ],
+        };
       }
       return d;
     });
@@ -191,22 +283,30 @@ export default function App() {
   };
 
   const deleteBlockFromDivision = (divId: string, blockId: string) => {
-    const updated = divisions.map(d => d.id === divId ? { ...d, blocks: d.blocks.filter(b => b.id !== blockId) } : d);
+    const updated = divisions.map((d) =>
+      d.id === divId
+        ? { ...d, blocks: d.blocks.filter((b) => b.id !== blockId) }
+        : d,
+    );
     setDivisions(updated);
     syncToFirestore(masterData, updated);
   };
 
-  const selectItemForBlock = (divId: string, blockId: string, itemId: string) => {
-    const updated = divisions.map(d => {
+  const selectItemForBlock = (
+    divId: string,
+    blockId: string,
+    itemId: string,
+  ) => {
+    const updated = divisions.map((d) => {
       if (d.id === divId) {
         return {
           ...d,
-          blocks: d.blocks.map(b => {
+          blocks: d.blocks.map((b) => {
             if (b.id === blockId && !b.selectedIds.includes(itemId)) {
               return { ...b, selectedIds: [...b.selectedIds, itemId] };
             }
             return b;
-          })
+          }),
         };
       }
       return d;
@@ -216,11 +316,18 @@ export default function App() {
   };
 
   const removeBlockItem = (divId: string, blockId: string, itemId: string) => {
-    const updated = divisions.map(d => {
+    const updated = divisions.map((d) => {
       if (d.id === divId) {
         return {
           ...d,
-          blocks: d.blocks.map(b => b.id === blockId ? { ...b, selectedIds: b.selectedIds.filter(id => id !== itemId) } : b)
+          blocks: d.blocks.map((b) =>
+            b.id === blockId
+              ? {
+                  ...b,
+                  selectedIds: b.selectedIds.filter((id) => id !== itemId),
+                }
+              : b,
+          ),
         };
       }
       return d;
@@ -230,60 +337,72 @@ export default function App() {
   };
 
   // Kalkulasi Diagram
-  const countingCategories: CategoryType[] = ['stakeholder', 'program', 'peralatan', 'output'];
+  const countingCategories: CategoryType[] = [
+    "stakeholder",
+    "program",
+    "peralatan",
+    "output",
+  ];
   let totalItems = 0;
   let checkedItems = 0;
 
-  countingCategories.forEach(cat => {
+  countingCategories.forEach((cat) => {
     const items = masterData[cat];
     totalItems += items.length;
-    checkedItems += items.filter(i => i.checked).length;
+    checkedItems += items.filter((i) => i.checked).length;
   });
 
-  const overallProgress = totalItems > 0 ? Math.round((checkedItems / totalItems) * 100) : 0;
+  const overallProgress =
+    totalItems > 0 ? Math.round((checkedItems / totalItems) * 100) : 0;
 
   return (
     <div className="min-h-screen bg-slate-100 font-sans text-slate-800 pb-12">
       <header className="bg-white border-b border-slate-200 px-6 py-4 shadow-sm">
         <div className="w-full px-4 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">
-            <img 
-              src="/icons.svg" 
-              alt="Logo STIT Media" 
+            <img
+              src="/icons.svg"
+              alt="Logo STIT Media"
               className="w-10 h-10 object-contain rounded-xl"
             />
             <div>
-              <h1 className="text-xl font-black text-slate-900 tracking-wide">STIT MEDIA</h1>
-              <p className="text-xs text-slate-500">Dashboard & Management System</p>
+              <h1 className="text-xl font-black text-slate-900 tracking-wide">
+                STIT MEDIA
+              </h1>
+              <p className="text-xs text-slate-500">
+                Dashboard & Management System
+              </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2 bg-slate-50 px-4 py-1.5 rounded-full border border-slate-200 shadow-inner">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">MULTIEDIA STIT</span>
+            <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+              MULTIEDIA STIT
+            </span>
           </div>
-<div className="flex flex-wrap items-center gap-3">
-          <div className="flex gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
-            <button 
-              onClick={() => setActiveTab('master')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === 'master' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-600 hover:bg-white'}`}
-            >
-              <Database className="w-4 h-4" /> Master Data
-            </button>
-            <button 
-              onClick={() => setActiveTab('canvas')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === 'canvas' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-600 hover:bg-white'}`}
-            >
-              <FolderKanban className="w-4 h-4" /> Kanvas Modul
-            </button>
-            <button 
-              onClick={() => setActiveTab('diagram')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === 'diagram' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-600 hover:bg-white'}`}
-            >
-              <BarChart3 className="w-4 h-4" /> Diagram & Progress
-            </button>
-          </div>
-          <a
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
+              <button
+                onClick={() => setActiveTab("master")}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === "master" ? "bg-blue-600 text-white shadow-md" : "text-slate-600 hover:bg-white"}`}
+              >
+                <Database className="w-4 h-4" /> Master Data
+              </button>
+              <button
+                onClick={() => setActiveTab("canvas")}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === "canvas" ? "bg-blue-600 text-white shadow-md" : "text-slate-600 hover:bg-white"}`}
+              >
+                <FolderKanban className="w-4 h-4" /> Kanvas Modul
+              </button>
+              <button
+                onClick={() => setActiveTab("diagram")}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === "diagram" ? "bg-blue-600 text-white shadow-md" : "text-slate-600 hover:bg-white"}`}
+              >
+                <BarChart3 className="w-4 h-4" /> Diagram & Progress
+              </button>
+            </div>
+            <a
               href="https://mmedia-wiibs.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
@@ -292,23 +411,27 @@ export default function App() {
               <span>Portal MMedia</span>
               <ExternalLink className="w-4 h-4 text-blue-600" />
             </a>
-</div>
+          </div>
         </div>
       </header>
 
       <main className="w-full p-6">
-        {activeTab === 'master' && (
+        {activeTab === "master" && (
           <div className="flex flex-col lg:flex-row gap-6">
             <div className="w-full lg:w-1/4 bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-1.5">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 px-3 mb-2">Kategori Induk</h2>
-              {(Object.keys(config) as CategoryType[]).map(key => (
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 px-3 mb-2">
+                Kategori Induk
+              </h2>
+              {(Object.keys(config) as CategoryType[]).map((key) => (
                 <button
                   key={key}
                   onClick={() => setActiveMasterCategory(key)}
-                  className={`text-left px-4 py-3 rounded-xl font-semibold text-sm transition-all flex justify-between items-center ${activeMasterCategory === key ? 'bg-blue-600 text-white shadow-md shadow-blue-200' : 'text-slate-600 hover:bg-slate-50'}`}
+                  className={`text-left px-4 py-3 rounded-xl font-semibold text-sm transition-all flex justify-between items-center ${activeMasterCategory === key ? "bg-blue-600 text-white shadow-md shadow-blue-200" : "text-slate-600 hover:bg-slate-50"}`}
                 >
                   <span>{config[key].label}</span>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${activeMasterCategory === key ? 'bg-blue-700 text-white' : 'bg-slate-100 text-slate-600'}`}>
+                  <span
+                    className={`text-xs px-2 py-0.5 rounded-full ${activeMasterCategory === key ? "bg-blue-700 text-white" : "bg-slate-100 text-slate-600"}`}
+                  >
                     {masterData[key].length}
                   </span>
                 </button>
@@ -317,28 +440,41 @@ export default function App() {
 
             <div className="flex-1 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
               <div className="border-b border-slate-100 pb-4 mb-6">
-                <h2 className="text-xl font-black text-slate-800">Setup: {config[activeMasterCategory].label}</h2>
-                <p className="text-xs text-slate-500 mt-0.5">Input data acuan yang otomatis tersinkron ke database online.</p>
+                <h2 className="text-xl font-black text-slate-800">
+                  Setup: {config[activeMasterCategory].label}
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Input data acuan yang otomatis tersinkron ke database online.
+                </p>
               </div>
 
-              <form onSubmit={handleAddMaster} className="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6 flex flex-col gap-4">
+              <form
+                onSubmit={handleAddMaster}
+                className="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6 flex flex-col gap-4"
+              >
                 <div className="flex flex-col md:flex-row gap-4">
                   <div className="flex-1">
-                    <label className="block text-xs font-bold text-slate-600 uppercase mb-1">{config[activeMasterCategory].col1Label}</label>
+                    <label className="block text-xs font-bold text-slate-600 uppercase mb-1">
+                      {config[activeMasterCategory].col1Label}
+                    </label>
                     {config[activeMasterCategory].isMultiline ? (
-                      <textarea 
+                      <textarea
                         rows={2}
                         placeholder={`Ketik ${config[activeMasterCategory].col1Label}...`}
                         value={formData.col1}
-                        onChange={e => setFormData({...formData, col1: e.target.value})}
+                        onChange={(e) =>
+                          setFormData({ ...formData, col1: e.target.value })
+                        }
                         className="w-full p-3 bg-white border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none resize-none shadow-sm"
                       />
                     ) : (
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         placeholder={`Ketik ${config[activeMasterCategory].col1Label}...`}
                         value={formData.col1}
-                        onChange={e => setFormData({...formData, col1: e.target.value})}
+                        onChange={(e) =>
+                          setFormData({ ...formData, col1: e.target.value })
+                        }
                         className="w-full p-3 bg-white border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none shadow-sm"
                       />
                     )}
@@ -346,19 +482,26 @@ export default function App() {
 
                   {config[activeMasterCategory].hasCol2 && (
                     <div className="flex-1">
-                      <label className="block text-xs font-bold text-slate-600 uppercase mb-1">{config[activeMasterCategory].col2Label}</label>
-                      <textarea 
+                      <label className="block text-xs font-bold text-slate-600 uppercase mb-1">
+                        {config[activeMasterCategory].col2Label}
+                      </label>
+                      <textarea
                         rows={2}
                         placeholder={`Ketik ${config[activeMasterCategory].col2Label}...`}
                         value={formData.col2}
-                        onChange={e => setFormData({...formData, col2: e.target.value})}
+                        onChange={(e) =>
+                          setFormData({ ...formData, col2: e.target.value })
+                        }
                         className="w-full p-3 bg-white border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none resize-none shadow-sm"
                       />
                     </div>
                   )}
                 </div>
                 <div className="flex justify-end">
-                  <button type="submit" className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold shadow-md transition-all flex items-center gap-2">
+                  <button
+                    type="submit"
+                    className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold shadow-md transition-all flex items-center gap-2"
+                  >
                     <Plus className="w-4 h-4" /> Simpan Data
                   </button>
                 </div>
@@ -368,44 +511,97 @@ export default function App() {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-wider">
-                      <th className="p-3.5 rounded-l-xl">{config[activeMasterCategory].col1Label}</th>
-                      {config[activeMasterCategory].hasCol2 && <th className="p-3.5">{config[activeMasterCategory].col2Label}</th>}
-                      {config[activeMasterCategory].hasStatus && <th className="p-3.5 text-center">Status Kepemilikan/Jalan</th>}
+                      <th className="p-3.5 rounded-l-xl">
+                        {config[activeMasterCategory].col1Label}
+                      </th>
+                      {config[activeMasterCategory].hasCol2 && (
+                        <th className="p-3.5">
+                          {config[activeMasterCategory].col2Label}
+                        </th>
+                      )}
+                      {config[activeMasterCategory].hasStatus && (
+                        <th className="p-3.5 text-center">
+                          Status Kepemilikan/Jalan
+                        </th>
+                      )}
                       <th className="p-3.5 text-center rounded-r-xl">Aksi</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 text-sm">
                     {masterData[activeMasterCategory].length === 0 ? (
-                      <tr><td colSpan={5} className="p-8 text-center text-slate-400 italic">Belum ada data tersimpan.</td></tr>
+                      <tr>
+                        <td
+                          colSpan={5}
+                          className="p-8 text-center text-slate-400 italic"
+                        >
+                          Belum ada data tersimpan.
+                        </td>
+                      </tr>
                     ) : (
-                      masterData[activeMasterCategory].map(item => (
-                        <tr key={item.id} className="hover:bg-slate-50 transition-colors">
+                      masterData[activeMasterCategory].map((item) => (
+                        <tr
+                          key={item.id}
+                          className="hover:bg-slate-50 transition-colors"
+                        >
                           <td className="p-3.5 text-slate-800 font-medium">
                             {editingId === item.id ? (
-                              <textarea value={editFormData.col1} onChange={e => setEditFormData({...editFormData, col1: e.target.value})} className="w-full p-2 border rounded-lg text-sm bg-white" rows={2} />
+                              <textarea
+                                value={editFormData.col1}
+                                onChange={(e) =>
+                                  setEditFormData({
+                                    ...editFormData,
+                                    col1: e.target.value,
+                                  })
+                                }
+                                className="w-full p-2 border rounded-lg text-sm bg-white"
+                                rows={2}
+                              />
                             ) : (
-                              <span className="whitespace-pre-wrap">{item.col1}</span>
+                              <span className="whitespace-pre-wrap">
+                                {item.col1}
+                              </span>
                             )}
                           </td>
 
                           {config[activeMasterCategory].hasCol2 && (
                             <td className="p-3.5 text-slate-600">
                               {editingId === item.id ? (
-                                <textarea value={editFormData.col2} onChange={e => setEditFormData({...editFormData, col2: e.target.value})} className="w-full p-2 border rounded-lg text-sm bg-white" rows={2} />
+                                <textarea
+                                  value={editFormData.col2}
+                                  onChange={(e) =>
+                                    setEditFormData({
+                                      ...editFormData,
+                                      col2: e.target.value,
+                                    })
+                                  }
+                                  className="w-full p-2 border rounded-lg text-sm bg-white"
+                                  rows={2}
+                                />
                               ) : (
-                                <span className="whitespace-pre-wrap">{item.col2 || '-'}</span>
+                                <span className="whitespace-pre-wrap">
+                                  {item.col2 || "-"}
+                                </span>
                               )}
                             </td>
                           )}
 
                           {config[activeMasterCategory].hasStatus && (
                             <td className="p-3.5 text-center">
-                              <button 
-                                onClick={() => handleToggleCheck(activeMasterCategory, item.id)}
-                                className={`px-3 py-1 rounded-full text-xs font-bold transition-all flex items-center justify-center gap-1.5 mx-auto ${item.checked ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-slate-100 text-slate-500'}`}
+                              <button
+                                onClick={() =>
+                                  handleToggleCheck(
+                                    activeMasterCategory,
+                                    item.id,
+                                  )
+                                }
+                                className={`px-3 py-1 rounded-full text-xs font-bold transition-all flex items-center justify-center gap-1.5 mx-auto ${item.checked ? "bg-emerald-100 text-emerald-800 border border-emerald-300" : "bg-slate-100 text-slate-500"}`}
                               >
-                                {item.checked ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Circle className="w-3.5 h-3.5" />}
-                                {item.checked ? 'Sudah / Tersedia' : 'Belum'}
+                                {item.checked ? (
+                                  <Check className="w-3.5 h-3.5 text-emerald-600" />
+                                ) : (
+                                  <Circle className="w-3.5 h-3.5" />
+                                )}
+                                {item.checked ? "Sudah / Tersedia" : "Belum"}
                               </button>
                             </td>
                           )}
@@ -413,11 +609,33 @@ export default function App() {
                           <td className="p-3.5 text-center">
                             <div className="flex items-center justify-center gap-2">
                               {editingId === item.id ? (
-                                <button onClick={() => saveEdit(activeMasterCategory, item.id)} className="px-3 py-1 bg-emerald-600 text-white rounded-lg text-xs font-bold">Simpan</button>
+                                <button
+                                  onClick={() =>
+                                    saveEdit(activeMasterCategory, item.id)
+                                  }
+                                  className="px-3 py-1 bg-emerald-600 text-white rounded-lg text-xs font-bold"
+                                >
+                                  Simpan
+                                </button>
                               ) : (
-                                <button onClick={() => startEdit(item)} className="p-1.5 bg-slate-100 hover:bg-blue-50 text-slate-600 rounded-lg"><Edit2 className="w-4 h-4" /></button>
+                                <button
+                                  onClick={() => startEdit(item)}
+                                  className="p-1.5 bg-slate-100 hover:bg-blue-50 text-slate-600 rounded-lg"
+                                >
+                                  <Edit2 className="w-4 h-4" />
+                                </button>
                               )}
-                              <button onClick={() => handleDeleteMaster(activeMasterCategory, item.id)} className="p-1.5 bg-slate-100 hover:bg-red-50 text-slate-600 rounded-lg"><Trash2 className="w-4 h-4" /></button>
+                              <button
+                                onClick={() =>
+                                  handleDeleteMaster(
+                                    activeMasterCategory,
+                                    item.id,
+                                  )
+                                }
+                                className="p-1.5 bg-slate-100 hover:bg-red-50 text-slate-600 rounded-lg"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
                             </div>
                           </td>
                         </tr>
@@ -430,11 +648,16 @@ export default function App() {
           </div>
         )}
 
-        {activeTab === 'canvas' && (
+        {activeTab === "canvas" && (
           <div>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-black text-slate-800">Peta Modular Divisi</h2>
-              <button onClick={addDivision} className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold shadow-md flex items-center gap-2">
+              <h2 className="text-xl font-black text-slate-800">
+                Peta Modular Divisi
+              </h2>
+              <button
+                onClick={addDivision}
+                className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold shadow-md flex items-center gap-2"
+              >
                 <Plus className="w-4 h-4" /> Tambah Divisi Baru
               </button>
             </div>
@@ -443,84 +666,156 @@ export default function App() {
               {divisions.length === 0 && (
                 <div className="w-full h-full min-h-[300px] border-2 border-dashed border-slate-300 bg-white rounded-2xl flex flex-col items-center justify-center text-slate-400">
                   <FolderKanban className="w-12 h-12 mb-2 text-slate-300" />
-                  <p className="font-semibold text-slate-600">Belum ada divisi.</p>
+                  <p className="font-semibold text-slate-600">
+                    Belum ada divisi.
+                  </p>
                 </div>
               )}
 
-              {divisions.map(div => (
-                <div key={div.id} className="min-w-[420px] w-[420px] bg-white rounded-2xl shadow-sm border border-slate-200 p-5 flex flex-col max-h-full">
+              {divisions.map((div) => (
+                <div
+                  key={div.id}
+                  className="min-w-[420px] w-[420px] bg-white rounded-2xl shadow-sm border border-slate-200 p-5 flex flex-col max-h-full"
+                >
                   <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={div.title}
-                      onChange={e => updateDivisionTitle(div.id, e.target.value)}
+                      onChange={(e) =>
+                        updateDivisionTitle(div.id, e.target.value)
+                      }
                       className="text-lg font-black text-slate-800 bg-transparent outline-none border-b border-transparent focus:border-blue-500 w-full"
                     />
-                    <button onClick={() => deleteDivision(div.id)} className="text-slate-300 hover:text-red-500 p-1"><Trash2 className="w-4 h-4" /></button>
+                    <button
+                      onClick={() => deleteDivision(div.id)}
+                      className="text-slate-300 hover:text-red-500 p-1"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
 
                   <div className="flex-1 overflow-y-auto pr-1 space-y-3 mb-4">
-                    {div.blocks.map(block => (
-                      <div key={block.id} className={`p-3.5 rounded-xl border ${config[block.type].color} relative shadow-sm`}>
+                    {div.blocks.map((block) => (
+                      <div
+                        key={block.id}
+                        className={`p-3.5 rounded-xl border ${config[block.type].color} relative shadow-sm`}
+                      >
                         <div className="flex justify-between items-center mb-2">
                           <span className="text-[10px] font-black uppercase tracking-wider bg-white/80 px-2 py-0.5 rounded border border-black/10">
                             {config[block.type].label}
                           </span>
-                          <button onClick={() => deleteBlockFromDivision(div.id, block.id)} className="text-black/30 hover:text-red-600">✕</button>
+                          <button
+                            onClick={() =>
+                              deleteBlockFromDivision(div.id, block.id)
+                            }
+                            className="text-black/30 hover:text-red-600"
+                          >
+                            ✕
+                          </button>
                         </div>
 
                         <div className="space-y-2 mb-2">
-                          {block.selectedIds.map(itemId => {
-                            const item = masterData[block.type].find(m => m.id === itemId);
+                          {block.selectedIds.map((itemId) => {
+                            const item = masterData[block.type].find(
+                              (m) => m.id === itemId,
+                            );
                             if (!item) return null;
 
-                            let statusText = '';
-                            let badgeColor = '';
-                            if (block.type === 'stakeholder' || block.type === 'peralatan') {
-                              statusText = item.checked ? 'Tersedia' : 'Belum';
-                              badgeColor = item.checked ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600';
-                            } else if (block.type === 'program' || block.type === 'output') {
-                              statusText = item.checked ? 'Selesai/Sudah berjalan' : 'Belum';
-                              badgeColor = item.checked ? 'bg-blue-100 text-blue-800' : 'bg-slate-200 text-slate-600';
+                            let statusText = "";
+                            let badgeColor = "";
+                            if (
+                              block.type === "stakeholder" ||
+                              block.type === "peralatan"
+                            ) {
+                              statusText = item.checked ? "Tersedia" : "Belum";
+                              badgeColor = item.checked
+                                ? "bg-emerald-100 text-emerald-800"
+                                : "bg-slate-200 text-slate-600";
+                            } else if (
+                              block.type === "program" ||
+                              block.type === "output"
+                            ) {
+                              statusText = item.checked
+                                ? "Selesai/Sudah berjalan"
+                                : "Belum";
+                              badgeColor = item.checked
+                                ? "bg-blue-100 text-blue-800"
+                                : "bg-slate-200 text-slate-600";
                             }
 
                             return (
-                              <div key={itemId} className="bg-white/90 p-2.5 rounded-lg border border-black/10 text-xs flex justify-between items-start gap-2 shadow-sm">
+                              <div
+                                key={itemId}
+                                className="bg-white/90 p-2.5 rounded-lg border border-black/10 text-xs flex justify-between items-start gap-2 shadow-sm"
+                              >
                                 <div>
-                                  <span className="font-bold text-slate-800 block whitespace-pre-wrap">{item.col1}</span>
-                                  {item.col2 && <span className="text-slate-500 block mt-0.5 whitespace-pre-wrap">{item.col2}</span>}
+                                  <span className="font-bold text-slate-800 block whitespace-pre-wrap">
+                                    {item.col1}
+                                  </span>
+                                  {item.col2 && (
+                                    <span className="text-slate-500 block mt-0.5 whitespace-pre-wrap">
+                                      {item.col2}
+                                    </span>
+                                  )}
                                 </div>
                                 <div className="flex items-center gap-1.5 shrink-0">
-                                  {statusText && <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${badgeColor}`}>{statusText}</span>}
-                                  <button onClick={() => removeBlockItem(div.id, block.id, itemId)} className="text-red-400 font-bold">✕</button>
+                                  {statusText && (
+                                    <span
+                                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${badgeColor}`}
+                                    >
+                                      {statusText}
+                                    </span>
+                                  )}
+                                  <button
+                                    onClick={() =>
+                                      removeBlockItem(div.id, block.id, itemId)
+                                    }
+                                    className="text-red-400 font-bold"
+                                  >
+                                    ✕
+                                  </button>
                                 </div>
                               </div>
                             );
                           })}
                         </div>
 
-                        <select 
+                        <select
                           value=""
-                          onChange={e => selectItemForBlock(div.id, block.id, e.target.value)}
+                          onChange={(e) =>
+                            selectItemForBlock(div.id, block.id, e.target.value)
+                          }
                           className="w-full p-2 bg-white/80 border rounded-lg text-xs outline-none cursor-pointer"
                         >
-                          <option value="" disabled>+ Pilih dari Master Data...</option>
-                          {masterData[block.type].filter(m => !block.selectedIds.includes(m.id)).map(m => (
-                            <option key={m.id} value={m.id}>{m.col1}</option>
-                          ))}
+                          <option value="" disabled>
+                            + Pilih dari Master Data...
+                          </option>
+                          {masterData[block.type]
+                            .filter((m) => !block.selectedIds.includes(m.id))
+                            .map((m) => (
+                              <option key={m.id} value={m.id}>
+                                {m.col1}
+                              </option>
+                            ))}
                         </select>
                       </div>
                     ))}
                   </div>
 
-                  <select 
+                  <select
                     value=""
-                    onChange={e => addBlockToDivision(div.id, e.target.value as CategoryType)}
+                    onChange={(e) =>
+                      addBlockToDivision(div.id, e.target.value as CategoryType)
+                    }
                     className="w-full p-2.5 bg-slate-50 border rounded-xl text-xs font-bold text-slate-600 outline-none cursor-pointer text-center"
                   >
-                    <option value="" disabled>+ Tambah Blok Kategori...</option>
-                    {(Object.keys(config) as CategoryType[]).map(key => (
-                      <option key={key} value={key}>{config[key].label}</option>
+                    <option value="" disabled>
+                      + Tambah Blok Kategori...
+                    </option>
+                    {(Object.keys(config) as CategoryType[]).map((key) => (
+                      <option key={key} value={key}>
+                        {config[key].label}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -529,45 +824,75 @@ export default function App() {
           </div>
         )}
 
-        {activeTab === 'diagram' && (
+        {activeTab === "diagram" && (
           <div className="space-y-6">
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-6">
               <div>
-                <h2 className="text-xl font-black text-slate-800">Ringkasan Capaian Media STIT</h2>
-                <p className="text-xs text-slate-500 mt-1">Kalkulasi otomatis dari item utama.</p>
+                <h2 className="text-xl font-black text-slate-800">
+                  Ringkasan Capaian Media STIT
+                </h2>
+                <p className="text-xs text-slate-500 mt-1">
+                  Kalkulasi otomatis dari item utama.
+                </p>
               </div>
               <div className="bg-blue-50 border border-blue-200 px-6 py-4 rounded-2xl text-center shadow-sm">
-                <span className="text-xs font-bold text-blue-600 uppercase tracking-wider block">Total Progress Keseluruhan</span>
-                <span className="text-3xl font-black text-blue-700">{overallProgress}%</span>
+                <span className="text-xs font-bold text-blue-600 uppercase tracking-wider block">
+                  Total Progress Keseluruhan
+                </span>
+                <span className="text-3xl font-black text-blue-700">
+                  {overallProgress}%
+                </span>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {countingCategories.map(cat => {
+              {countingCategories.map((cat) => {
                 const items = masterData[cat];
-                const checkedCount = items.filter(i => i.checked).length;
-                const percent = items.length > 0 ? Math.round((checkedCount / items.length) * 100) : 0;
+                const checkedCount = items.filter((i) => i.checked).length;
+                const percent =
+                  items.length > 0
+                    ? Math.round((checkedCount / items.length) * 100)
+                    : 0;
 
                 return (
-                  <div key={cat} className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                  <div
+                    key={cat}
+                    className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between"
+                  >
                     <div>
                       <div className="flex justify-between items-center mb-3">
-                        <h3 className="font-extrabold text-slate-800 text-sm uppercase tracking-wider">{config[cat].label}</h3>
-                        <span className="text-xs font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">{checkedCount} / {items.length}</span>
+                        <h3 className="font-extrabold text-slate-800 text-sm uppercase tracking-wider">
+                          {config[cat].label}
+                        </h3>
+                        <span className="text-xs font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">
+                          {checkedCount} / {items.length}
+                        </span>
                       </div>
-                      
+
                       <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mb-4">
-                        <div className="bg-blue-600 h-full transition-all duration-500" style={{ width: `${percent}%` }}></div>
+                        <div
+                          className="bg-blue-600 h-full transition-all duration-500"
+                          style={{ width: `${percent}%` }}
+                        ></div>
                       </div>
 
                       <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
                         {items.length === 0 ? (
-                          <p className="text-xs text-slate-400 italic">Belum ada data.</p>
+                          <p className="text-xs text-slate-400 italic">
+                            Belum ada data.
+                          </p>
                         ) : (
-                          items.map(item => (
-                            <div key={item.id} className="text-xs flex items-center justify-between bg-slate-50 p-2 rounded-lg border border-slate-100">
-                              <span className="font-medium text-slate-700 truncate max-w-[180px]">{item.col1}</span>
-                              <span className={`w-2 h-2 rounded-full ${item.checked ? 'bg-emerald-500' : 'bg-slate-300'}`}></span>
+                          items.map((item) => (
+                            <div
+                              key={item.id}
+                              className="text-xs flex items-center justify-between bg-slate-50 p-2 rounded-lg border border-slate-100"
+                            >
+                              <span className="font-medium text-slate-700 truncate max-w-[180px]">
+                                {item.col1}
+                              </span>
+                              <span
+                                className={`w-2 h-2 rounded-full ${item.checked ? "bg-emerald-500" : "bg-slate-300"}`}
+                              ></span>
                             </div>
                           ))
                         )}
@@ -575,7 +900,9 @@ export default function App() {
                     </div>
 
                     <div className="mt-4 pt-3 border-t border-slate-100 text-right">
-                      <span className="text-xs font-bold text-blue-600">{percent}% Selesai</span>
+                      <span className="text-xs font-bold text-blue-600">
+                        {percent}% Selesai
+                      </span>
                     </div>
                   </div>
                 );
