@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   FolderKanban, Database, BarChart3, Plus, Trash2, Edit2, 
-  Circle, Layers, Check 
+  Circle, Layers, Check, ExternalLink 
 } from 'lucide-react';
 
 // === FIREBASE FIRESTORE SETUP ===
@@ -283,6 +283,15 @@ export default function App() {
               <BarChart3 className="w-4 h-4" /> Diagram & Progress
             </button>
           </div>
+          <a
+  href="https://mmedia-wiibs.vercel.app/"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-xl text-sm font-bold shadow-sm"
+>
+  Portal MMedia
+  <ExternalLink className="w-4 h-4 text-slate-400" />
+</a>
         </div>
       </header>
 
