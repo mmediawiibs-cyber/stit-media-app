@@ -427,7 +427,7 @@ export default function App() {
               </button>
             </div>
 
-            <div className="flex gap-6 overflow-x-auto pb-8 items-start h-[70vh]">
+            <div className="flex justify-center gap-6 overflow-x-auto pb-8 items-start h-[70vh]">
               {divisions.length === 0 && (
                 <div className="w-full h-full min-h-[300px] border-2 border-dashed border-slate-300 bg-white rounded-2xl flex flex-col items-center justify-center text-slate-400">
                   <FolderKanban className="w-12 h-12 mb-2 text-slate-300" />
@@ -436,7 +436,7 @@ export default function App() {
               )}
 
               {divisions.map(div => (
-                <div key={div.id} className="min-w-[380px] w-[380px] bg-white rounded-2xl shadow-sm border border-slate-200 p-5 flex flex-col max-h-full">
+                <div key={div.id} className="min-w-[420px] w-[420px] bg-white rounded-2xl shadow-sm border border-slate-200 p-5 flex flex-col max-h-full">
                   <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
                     <input 
                       type="text" 
