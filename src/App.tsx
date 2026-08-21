@@ -262,7 +262,7 @@ export default function App() {
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
             <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">MULTIEDIA STIT</span>
           </div>
-
+<div className="flex flex-wrap items-center gap-3">
           <div className="flex gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
             <button 
               onClick={() => setActiveTab('master')}
@@ -292,6 +292,7 @@ export default function App() {
               <span>Portal MMedia</span>
               <ExternalLink className="w-4 h-4 text-blue-600" />
             </a>
+</div>
         </div>
       </header>
 
