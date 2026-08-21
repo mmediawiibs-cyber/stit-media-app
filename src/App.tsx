@@ -821,92 +821,196 @@ export default function App() {
           </div>
         )}
 
-        {activeTab === "diagram" && (
-          <div className="space-y-6">
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-6">
-              <div>
-                <h2 className="text-xl font-black text-slate-800">
-                  Ringkasan Capaian Media STIT
-                </h2>
-                <p className="text-xs text-slate-500 mt-1">
-                  Kalkulasi otomatis dari item utama.
-                </p>
-              </div>
-              <div className="bg-blue-50 border border-blue-200 px-6 py-4 rounded-2xl text-center shadow-sm">
-                <span className="text-xs font-bold text-blue-600 uppercase tracking-wider block">
-                  Total Progress Keseluruhan
-                </span>
-                <span className="text-3xl font-black text-blue-700">
-                  {overallProgress}%
-                </span>
-              </div>
-            </div>
+        {activeTab === "diagram" &&
+          (() => {
+            // --- KALKULASI DOUGHNUT CHART ---
+            let currentPercent = 0;
+            const gradientStops: string[] = [];
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {countingCategories.map((cat) => {
-                const items = masterData[cat];
-                const checkedCount = items.filter((i) => i.checked).length;
-                const percent =
-                  items.length > 0
-                    ? Math.round((checkedCount / items.length) * 100)
-                    : 0;
+            countingCategories.forEach((cat) => {
+              const checked = masterData[cat].filter((i) => i.checked).length;
+              if (checked > 0 && totalItems > 0) {
+                const pct = (checked / totalItems) * 100;
+                // Kode warna HEX ini sama dengan warna Tailwind (indigo, rose, cyan, orange)
+                const color =
+                  cat === "stakeholder"
+                    ? "#6366f1"
+                    : cat === "program"
+                      ? "#f43f5e"
+                      : cat === "peralatan"
+                        ? "#06b6d4"
+                        : "#f97316";
 
-                return (
+                gradientStops.push(
+                  `${color} ${currentPercent}% ${currentPercent + pct}%`,
+                );
+                currentPercent += pct;
+              }
+            });
+
+            // Sisa yang belum selesai (warna abu-abu)
+            if (currentPercent < 100) {
+              gradientStops.push(`#f1f5f9 ${currentPercent}% 100%`);
+            }
+
+            const conicString = gradientStops.join(", ");
+
+            return (
+              <div className="space-y-6">
+                {/* --- BAGIAN 1: TOTAL PROGRESS (DOUGHNUT CHART) --- */}
+                <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row items-center gap-8">
+                  {/* Visual Doughnut Chart */}
                   <div
-                    key={cat}
-                    className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between"
+                    className="relative w-48 h-48 shrink-0 rounded-full flex items-center justify-center shadow-sm"
+                    style={{ background: `conic-gradient(${conicString})` }}
                   >
-                    <div>
-                      <div className="flex justify-between items-center mb-3">
-                        <h3 className="font-extrabold text-slate-800 text-sm uppercase tracking-wider">
-                          {config[cat].label}
-                        </h3>
-                        <span className="text-xs font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">
-                          {checkedCount} / {items.length}
-                        </span>
-                      </div>
-
-                      <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mb-4">
-                        <div
-                          className="bg-blue-600 h-full transition-all duration-500"
-                          style={{ width: `${percent}%` }}
-                        ></div>
-                      </div>
-
-                      <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
-                        {items.length === 0 ? (
-                          <p className="text-xs text-slate-400 italic">
-                            Belum ada data.
-                          </p>
-                        ) : (
-                          items.map((item) => (
-                            <div
-                              key={item.id}
-                              className="text-xs flex items-center justify-between bg-slate-50 p-2 rounded-lg border border-slate-100"
-                            >
-                              <span className="font-medium text-slate-700 truncate max-w-[180px]">
-                                {item.col1}
-                              </span>
-                              <span
-                                className={`w-2 h-2 rounded-full ${item.checked ? "bg-emerald-500" : "bg-slate-300"}`}
-                              ></span>
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="mt-4 pt-3 border-t border-slate-100 text-right">
-                      <span className="text-xs font-bold text-blue-600">
-                        {percent}% Selesai
+                    {/* Lingkaran Putih di Tengah (Membuat Efek Donat/Bolong) */}
+                    <div className="w-36 h-36 bg-white rounded-full flex flex-col items-center justify-center shadow-inner">
+                      <span className="text-4xl font-black text-slate-800">
+                        {overallProgress}%
+                      </span>
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">
+                        Selesai
                       </span>
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
+
+                  {/* Teks & Keterangan (Legend Kanan) */}
+                  <div className="flex-1 w-full text-center md:text-left">
+                    <h2 className="text-2xl font-black text-slate-800">
+                      Ringkasan Capaian Keseluruhan
+                    </h2>
+                    <p className="text-sm text-slate-500 mt-1 mb-6">
+                      Kalkulasi persentase otomatis dari 4 kategori utama yang
+                      sedang berjalan.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {countingCategories.map((cat) => {
+                        const checked = masterData[cat].filter(
+                          (i) => i.checked,
+                        ).length;
+                        const total = masterData[cat].length;
+
+                        // Sesuaikan warna titik legend
+                        const barColor =
+                          cat === "stakeholder"
+                            ? "bg-indigo-500"
+                            : cat === "program"
+                              ? "bg-rose-500"
+                              : cat === "peralatan"
+                                ? "bg-cyan-500"
+                                : "bg-orange-500";
+
+                        return (
+                          <div
+                            key={cat}
+                            className="flex items-center gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100"
+                          >
+                            <span
+                              className={`w-4 h-4 rounded-full ${barColor} shadow-sm shrink-0`}
+                            ></span>
+                            <div className="flex-1 text-left">
+                              <span className="text-xs font-bold text-slate-700 block uppercase">
+                                {config[cat].label}
+                              </span>
+                              <span className="text-[10px] font-semibold text-slate-500">
+                                {checked} dari {total} selesai
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                {/* --- BAGIAN 2: PROGRESS PER KATEGORI --- */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {countingCategories.map((cat) => {
+                    const items = masterData[cat];
+                    const checkedCount = items.filter((i) => i.checked).length;
+                    const percent =
+                      items.length > 0
+                        ? Math.round((checkedCount / items.length) * 100)
+                        : 0;
+
+                    // Setel Warna Khusus untuk Tiap Kategori
+                    const barColor =
+                      cat === "stakeholder"
+                        ? "bg-indigo-500"
+                        : cat === "program"
+                          ? "bg-rose-500"
+                          : cat === "peralatan"
+                            ? "bg-cyan-500"
+                            : "bg-orange-500";
+
+                    const textColor =
+                      cat === "stakeholder"
+                        ? "text-indigo-600"
+                        : cat === "program"
+                          ? "text-rose-600"
+                          : cat === "peralatan"
+                            ? "text-cyan-600"
+                            : "text-orange-600";
+
+                    return (
+                      <div
+                        key={cat}
+                        className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between hover:shadow-md transition-shadow"
+                      >
+                        <div>
+                          <div className="flex justify-between items-center mb-3">
+                            <h3 className="font-extrabold text-slate-800 text-sm uppercase tracking-wider">
+                              {config[cat].label}
+                            </h3>
+                            <span className="text-xs font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">
+                              {checkedCount} / {items.length}
+                            </span>
+                          </div>
+
+                          <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mb-4 shadow-inner">
+                            <div
+                              className={`${barColor} h-full transition-all duration-500`}
+                              style={{ width: `${percent}%` }}
+                            ></div>
+                          </div>
+
+                          <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
+                            {items.length === 0 ? (
+                              <p className="text-xs text-slate-400 italic">
+                                Belum ada data.
+                              </p>
+                            ) : (
+                              items.map((item) => (
+                                <div
+                                  key={item.id}
+                                  className="text-xs flex items-center justify-between bg-slate-50 p-2 rounded-lg border border-slate-100"
+                                >
+                                  <span className="font-medium text-slate-700 truncate max-w-[180px]">
+                                    {item.col1}
+                                  </span>
+                                  <span
+                                    className={`w-2 h-2 rounded-full ${item.checked ? barColor : "bg-slate-300"}`}
+                                  ></span>
+                                </div>
+                              ))
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="mt-4 pt-3 border-t border-slate-100 text-right">
+                          <span className={`text-xs font-black ${textColor}`}>
+                            {percent}% Selesai
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })()}
       </main>
     </div>
   );
