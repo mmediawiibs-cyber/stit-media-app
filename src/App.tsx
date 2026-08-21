@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  FolderKanban,
-  Database,
-  BarChart3,
-  Plus,
-  Trash2,
-  Edit2,
-  Circle,
-  Check,
-} from "lucide-react";
+import { FolderKanban, Plus, Trash2, Edit2, Circle, Check } from "lucide-react";
 
 // === FIREBASE FIRESTORE SETUP ===
 import { initializeApp } from "firebase/app";
@@ -126,9 +117,7 @@ interface Division {
 }
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<"master" | "canvas" | "diagram">(
-    "master",
-  );
+  const [activeTab] = useState<"master" | "canvas" | "diagram">("master");
 
   const [masterData, setMasterData] = useState<
     Record<CategoryType, MasterItem[]>
