@@ -131,6 +131,9 @@ export default function App() {
     "master" | "canvas" | "diagram" | "event"
   >("master");
 
+  // State untuk mengontrol kemunculan Modal Popup Flipbook
+  const [selectedFlipbook, setSelectedFlipbook] = useState<string | null>(null);
+
   const [masterData, setMasterData] = useState<
     Record<CategoryType, MasterItem[]>
   >({
@@ -382,7 +385,7 @@ export default function App() {
             </div>
           </div>
 
-          {/* Navigasi Utama + Tombol Task & Konten */}
+          {/* Navigasi Utama + Tombol Task & Konten Putih */}
           <div className="flex flex-wrap items-center gap-3">
             <div className="flex gap-1 bg-[#022b57] p-1 rounded-xl border border-[#c79d3a]/30 shadow-inner">
               <button
@@ -558,7 +561,7 @@ export default function App() {
               <div className="flex-1 overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-wider">
+                    <tr className="bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-wider border-b border-slate-200">
                       <th className="p-3.5 rounded-l-xl">
                         {config[activeMasterCategory].col1Label}
                       </th>
@@ -1061,9 +1064,7 @@ export default function App() {
             );
           })()}
 
-        {/* ================= TAB 4: EVENT & EMBED FLIPBOOK ================= */}
-        {/* ================= TAB 4: EVENT & EMBED FLIPBOOK ================= */}
-        {/* ================= TAB 4: EVENT & KATALOG FLIPBOOK ================= */}
+        {/* ================= TAB 4: EVENT & KATALOG FLIPBOOK (MODAL POPUP) ================= */}
         {activeTab === "event" && (
           <div className="space-y-6">
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
@@ -1072,8 +1073,8 @@ export default function App() {
                   Dokumentasi & Flipbook Event
                 </h2>
                 <p className="text-xs text-slate-500 mt-1">
-                  Koleksi katalog digital, modul pelatihan, rundown, dan majalah
-                  kegiatan STIT Media.
+                  Klik pada kartu buku untuk membuka dan membaca dalam mode
+                  popup interaktif.
                 </p>
               </div>
             </div>
@@ -1090,21 +1091,22 @@ export default function App() {
                   url: "https://heyzine.com/flip-book/76993616b5.html",
                   date: "Event 2026",
                 },
-                // Tambahkan flipbook berikutnya di sini:
+                // Tambah flipbook berikutnya di sini:
                 // {
                 //   id: "2",
-                //   title: "Buku Panduan Mahasiswa Baru",
-                //   subtitle: "Edisi Pengenalan Kampus",
-                //   cover: "https://via.placeholder.com/400x550",
+                //   title: "Judul Buku Berikutnya",
+                //   subtitle: "Deskripsi singkat",
+                //   cover: "https://url-gambar-cover.jpg",
                 //   url: "https://heyzine.com/flip-book/xxxxxx.html",
                 //   date: "Event 2026",
                 // },
               ].map((book) => (
                 <div
                   key={book.id}
-                  className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-200 overflow-hidden flex flex-col group"
+                  onClick={() => setSelectedFlipbook(book.url)}
+                  className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-200 overflow-hidden flex flex-col group cursor-pointer"
                 >
-                  {/* Thumbnail / Cover Buku */}
+                  {/* Cover Buku */}
                   <div className="relative aspect-[3/4] bg-slate-900 overflow-hidden">
                     <img
                       src={book.cover}
@@ -1116,7 +1118,7 @@ export default function App() {
                     </span>
                   </div>
 
-                  {/* Body Kartu */}
+                  {/* Keterangan & Aksi */}
                   <div className="p-4 flex-1 flex flex-col justify-between">
                     <div>
                       <h3 className="font-extrabold text-[#011f3f] text-sm leading-snug line-clamp-2">
@@ -1127,19 +1129,47 @@ export default function App() {
                       </p>
                     </div>
 
-                    {/* Tombol Buka Flipbook */}
-                    <a
-                      href={book.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-4 w-full py-2.5 px-4 bg-[#011f3f] hover:bg-[#022b57] text-[#c79d3a] hover:text-white rounded-xl text-xs font-black shadow-sm transition-colors text-center border border-[#c79d3a]/40 flex items-center justify-center gap-1.5"
+                    <button
+                      type="button"
+                      className="mt-4 w-full py-2.5 px-4 bg-[#011f3f] group-hover:bg-[#022b57] text-[#c79d3a] rounded-xl text-xs font-black shadow-sm transition-colors text-center border border-[#c79d3a]/40 flex items-center justify-center gap-1.5"
                     >
-                      <span>Buka Flipbook ↗</span>
-                    </a>
+                      <span>Baca Flipbook (Popup)</span>
+                    </button>
                   </div>
                 </div>
               ))}
             </div>
+
+            {/* POPUP MODAL FLIPBOOK */}
+            {selectedFlipbook && (
+              <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 md:p-8 animate-fadeIn">
+                <div className="relative w-full max-w-5xl h-[85vh] bg-slate-950 rounded-2xl border border-white/20 shadow-2xl flex flex-col overflow-hidden">
+                  {/* Header Bar Modal */}
+                  <div className="flex justify-between items-center px-4 py-3 bg-[#011f3f] border-b border-white/10">
+                    <span className="text-xs font-bold text-[#c79d3a] uppercase tracking-wider">
+                      Pratinjau Flipbook Heyzine
+                    </span>
+                    <button
+                      onClick={() => setSelectedFlipbook(null)}
+                      className="text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-lg px-2.5 py-1 text-xs font-bold transition-all"
+                    >
+                      ✕ Tutup
+                    </button>
+                  </div>
+
+                  {/* Frame Flipbook */}
+                  <div className="flex-1 w-full h-full bg-slate-900">
+                    <iframe
+                      src={selectedFlipbook}
+                      title="Heyzine Flipbook Modal"
+                      className="w-full h-full border-0"
+                      allowFullScreen
+                      allow="autoplay; fullscreen; clipboard-write"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </main>
