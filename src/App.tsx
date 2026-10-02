@@ -3,6 +3,7 @@ import {
   FolderKanban,
   Database,
   BarChart3,
+  CalendarDays,
   Plus,
   Trash2,
   Edit2,
@@ -126,9 +127,9 @@ interface Division {
 }
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<"master" | "canvas" | "diagram">(
-    "master",
-  );
+  const [activeTab, setActiveTab] = useState<
+    "master" | "canvas" | "diagram" | "event"
+  >("master");
 
   const [masterData, setMasterData] = useState<
     Record<CategoryType, MasterItem[]>
@@ -354,14 +355,14 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800 pb-12">
-      {/* HEADER / HERO (#011f3f dengan aksen #c79d3a) */}
+      {/* HEADER FLOATING STICKY (#011f3f & border #c79d3a) */}
       <header className="sticky top-0 z-50 bg-[#011f3f]/95 backdrop-blur-md border-b-2 border-[#c79d3a]/30 px-6 py-4 shadow-lg">
         <div className="w-full px-4 flex flex-col md:flex-row justify-between items-center gap-4">
-          {/* Logo & Judul dengan Indikator Online di Sudut Logo */}
+          {/* Logo dengan Status Dot Hijau di Sudut */}
           <div className="flex items-center gap-3">
             <div className="relative inline-block">
               <img
-                src="/logostit.png"
+                src="/logostit.svg"
                 alt="Logo STIT Media"
                 className="w-10 h-10 object-contain rounded-xl bg-white p-1 shadow-sm border border-[#c79d3a]/30"
               />
@@ -381,8 +382,7 @@ export default function App() {
             </div>
           </div>
 
-          {/* Navigasi Menu & Tombol External */}
-          {/* Navigasi Utama + Tombol Task */}
+          {/* Navigasi Utama + Tombol Task Putih */}
           <div className="flex flex-wrap items-center gap-3">
             <div className="flex gap-1 bg-[#022b57] p-1 rounded-xl border border-[#c79d3a]/30 shadow-inner">
               <button
@@ -415,6 +415,16 @@ export default function App() {
               >
                 <BarChart3 className="w-4 h-4" /> Diagram & Progress
               </button>
+              <button
+                onClick={() => setActiveTab("event")}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${
+                  activeTab === "event"
+                    ? "bg-white text-[#011f3f] shadow-md"
+                    : "text-white/80 hover:bg-white/10 hover:text-white"
+                }`}
+              >
+                <CalendarDays className="w-4 h-4" /> Event
+              </button>
             </div>
 
             <a
@@ -430,7 +440,7 @@ export default function App() {
       </header>
 
       <main className="w-full p-6">
-        {/* ================= TAB MASTER DATA ================= */}
+        {/* ================= TAB 1: MASTER DATA ================= */}
         {activeTab === "master" && (
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Sidebar Kategori */}
@@ -445,7 +455,7 @@ export default function App() {
                   className={`text-left px-4 py-3 rounded-xl font-bold text-sm transition-all flex justify-between items-center ${
                     activeMasterCategory === key
                       ? "bg-[#011f3f] text-[#c79d3a] shadow-md border border-[#c79d3a]/30"
-                      : "text-slate-600 hover:bg-[#eced8f]/20 hover:text-slate-900"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                   }`}
                 >
                   <span>{config[key].label}</span>
@@ -453,7 +463,7 @@ export default function App() {
                     className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${
                       activeMasterCategory === key
                         ? "bg-[#c79d3a] text-slate-950"
-                        : "bg-[#eced8f]/50 text-slate-800"
+                        : "bg-slate-100 text-slate-700"
                     }`}
                   >
                     {masterData[key].length}
@@ -473,7 +483,7 @@ export default function App() {
                 </p>
               </div>
 
-              {/* Form Input Box (#eced8f background) */}
+              {/* Form Input Box */}
               <form
                 onSubmit={handleAddMaster}
                 className="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6 flex flex-col gap-4"
@@ -533,7 +543,7 @@ export default function App() {
                 </div>
               </form>
 
-              {/* Tabel dengan Header Berwarna #eced8f */}
+              {/* Tabel Master Data */}
               <div className="flex-1 overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
@@ -568,7 +578,7 @@ export default function App() {
                       masterData[activeMasterCategory].map((item) => (
                         <tr
                           key={item.id}
-                          className="hover:bg-[#eced8f]/10 transition-colors"
+                          className="hover:bg-slate-50 transition-colors"
                         >
                           <td className="p-3.5 text-slate-800 font-medium">
                             {editingId === item.id ? (
@@ -651,7 +661,7 @@ export default function App() {
                               ) : (
                                 <button
                                   onClick={() => startEdit(item)}
-                                  className="p-1.5 bg-slate-100 hover:bg-[#eced8f] text-slate-600 rounded-lg transition-colors"
+                                  className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg transition-colors"
                                 >
                                   <Edit2 className="w-4 h-4" />
                                 </button>
@@ -679,7 +689,7 @@ export default function App() {
           </div>
         )}
 
-        {/* ================= TAB KANVAS MODUL ================= */}
+        {/* ================= TAB 2: KANVAS MODUL ================= */}
         {activeTab === "canvas" && (
           <div>
             <div className="flex justify-between items-center mb-6">
@@ -839,7 +849,7 @@ export default function App() {
                     onChange={(e) =>
                       addBlockToDivision(div.id, e.target.value as CategoryType)
                     }
-                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-600 outline-none cursor-pointer text-center"
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 outline-none cursor-pointer text-center"
                   >
                     <option value="" disabled>
                       + Tambah Blok Kategori...
@@ -856,7 +866,7 @@ export default function App() {
           </div>
         )}
 
-        {/* ================= TAB DIAGRAM & PROGRESS ================= */}
+        {/* ================= TAB 3: DIAGRAM & PROGRESS ================= */}
         {activeTab === "diagram" &&
           (() => {
             let currentPercent = 0;
@@ -992,7 +1002,7 @@ export default function App() {
                             <h3 className="font-extrabold text-[#011f3f] text-sm uppercase tracking-wider">
                               {config[cat].label}
                             </h3>
-                            <span className="text-xs font-bold bg-[#eced8f]/50 text-slate-800 px-2 py-0.5 rounded-full">
+                            <span className="text-xs font-bold bg-slate-100 text-slate-800 px-2 py-0.5 rounded-full">
                               {checkedCount} / {items.length}
                             </span>
                           </div>
@@ -1039,6 +1049,36 @@ export default function App() {
               </div>
             );
           })()}
+
+        {/* ================= TAB 4: EVENT & EMBED FLIPBOOK ================= */}
+        {activeTab === "event" && (
+          <div className="space-y-6">
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
+              <div>
+                <h2 className="text-xl font-black text-[#011f3f]">
+                  Dokumentasi & Flipbook Event
+                </h2>
+                <p className="text-xs text-slate-500 mt-1">
+                  Katalog digital, rundown, modul, atau majalah kegiatan STIT
+                  Media.
+                </p>
+              </div>
+            </div>
+
+            {/* Container Embed Flipbook */}
+            <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+              <div className="w-full h-[75vh] rounded-xl overflow-hidden bg-slate-900 border border-slate-200">
+                <iframe
+                  src="https://heyzine.com/flip-book/example"
+                  title="Flipbook Event STIT"
+                  className="w-full h-full border-0"
+                  allowFullScreen
+                  allow="clipboard-write"
+                />
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
