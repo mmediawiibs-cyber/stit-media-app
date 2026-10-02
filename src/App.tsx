@@ -1051,6 +1051,7 @@ export default function App() {
           })()}
 
         {/* ================= TAB 4: EVENT & EMBED FLIPBOOK ================= */}
+        {/* ================= TAB 4: EVENT & EMBED FLIPBOOK ================= */}
         {activeTab === "event" && (
           <div className="space-y-6">
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
@@ -1065,15 +1066,16 @@ export default function App() {
               </div>
             </div>
 
-            {/* Container Embed Flipbook */}
+            {/* Container Embed Flipbook Heyzine */}
             <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
-              <div className="w-full h-[75vh] rounded-xl overflow-hidden bg-slate-900 border border-slate-200">
+              <div className="w-full h-[75vh] min-h-[500px] rounded-xl overflow-hidden bg-slate-900 border border-slate-200 shadow-inner">
                 <iframe
-                  src="https://heyzine.com/flip-book/example"
-                  title="Flipbook Event STIT"
+                  src="https://heyzine.com/flip-book/76993616b5.html"
+                  title="Flipbook Event STIT Media"
                   className="w-full h-full border-0"
+                  scrolling="no"
                   allowFullScreen
-                  allow="clipboard-write"
+                  allow="autoplay; fullscreen; clipboard-write"
                 />
               </div>
             </div>
