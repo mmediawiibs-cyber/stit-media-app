@@ -382,7 +382,7 @@ export default function App() {
             </div>
           </div>
 
-          {/* Navigasi Utama + Tombol Task Putih */}
+          {/* Navigasi Utama + Tombol Task & Konten */}
           <div className="flex flex-wrap items-center gap-3">
             <div className="flex gap-1 bg-[#022b57] p-1 rounded-xl border border-[#c79d3a]/30 shadow-inner">
               <button
@@ -427,6 +427,7 @@ export default function App() {
               </button>
             </div>
 
+            {/* Tombol External: Task */}
             <a
               href="https://mmedia-wiibs.vercel.app/"
               target="_blank"
@@ -434,6 +435,16 @@ export default function App() {
               className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-slate-100 text-[#011f3f] rounded-xl text-sm font-bold shadow-md transition-all border border-white/50"
             >
               <span>Task</span>
+            </a>
+
+            {/* Tombol External: Konten */}
+            <a
+              href="https://konten-kalender.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-slate-100 text-[#011f3f] rounded-xl text-sm font-bold shadow-md transition-all border border-white/50"
+            >
+              <span>Konten</span>
             </a>
           </div>
         </div>
