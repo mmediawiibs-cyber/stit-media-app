@@ -1063,6 +1063,7 @@ export default function App() {
 
         {/* ================= TAB 4: EVENT & EMBED FLIPBOOK ================= */}
         {/* ================= TAB 4: EVENT & EMBED FLIPBOOK ================= */}
+        {/* ================= TAB 4: EVENT & KATALOG FLIPBOOK ================= */}
         {activeTab === "event" && (
           <div className="space-y-6">
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
@@ -1071,24 +1072,73 @@ export default function App() {
                   Dokumentasi & Flipbook Event
                 </h2>
                 <p className="text-xs text-slate-500 mt-1">
-                  Katalog digital, rundown, modul, atau majalah kegiatan STIT
-                  Media.
+                  Koleksi katalog digital, modul pelatihan, rundown, dan majalah
+                  kegiatan STIT Media.
                 </p>
               </div>
             </div>
 
-            {/* Container Embed Flipbook Heyzine */}
-            <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
-              <div className="w-full h-[75vh] min-h-[500px] rounded-xl overflow-hidden bg-slate-900 border border-slate-200 shadow-inner">
-                <iframe
-                  src="https://heyzine.com/flip-book/76993616b5.html"
-                  title="Flipbook Event STIT Media"
-                  className="w-full h-full border-0"
-                  scrolling="no"
-                  allowFullScreen
-                  allow="autoplay; fullscreen; clipboard-write"
-                />
-              </div>
+            {/* Grid Kartu Flipbook */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {[
+                {
+                  id: "1",
+                  title: "Pelatihan Musyrif Profesional",
+                  subtitle: "Modul & Panduan Resmi Pelatihan",
+                  cover:
+                    "https://cdnm.heyzine.com/flip-book/cover/76993616b5.jpg",
+                  url: "https://heyzine.com/flip-book/76993616b5.html",
+                  date: "Event 2026",
+                },
+                // Tambahkan flipbook berikutnya di sini:
+                // {
+                //   id: "2",
+                //   title: "Buku Panduan Mahasiswa Baru",
+                //   subtitle: "Edisi Pengenalan Kampus",
+                //   cover: "https://via.placeholder.com/400x550",
+                //   url: "https://heyzine.com/flip-book/xxxxxx.html",
+                //   date: "Event 2026",
+                // },
+              ].map((book) => (
+                <div
+                  key={book.id}
+                  className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-200 overflow-hidden flex flex-col group"
+                >
+                  {/* Thumbnail / Cover Buku */}
+                  <div className="relative aspect-[3/4] bg-slate-900 overflow-hidden">
+                    <img
+                      src={book.cover}
+                      alt={book.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <span className="absolute top-3 right-3 text-[10px] font-black uppercase tracking-wider bg-[#011f3f]/80 backdrop-blur-md text-[#c79d3a] px-2.5 py-1 rounded-full border border-[#c79d3a]/30 shadow-md">
+                      {book.date}
+                    </span>
+                  </div>
+
+                  {/* Body Kartu */}
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-extrabold text-[#011f3f] text-sm leading-snug line-clamp-2">
+                        {book.title}
+                      </h3>
+                      <p className="text-xs text-slate-500 mt-1 line-clamp-1">
+                        {book.subtitle}
+                      </p>
+                    </div>
+
+                    {/* Tombol Buka Flipbook */}
+                    <a
+                      href={book.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-4 w-full py-2.5 px-4 bg-[#011f3f] hover:bg-[#022b57] text-[#c79d3a] hover:text-white rounded-xl text-xs font-black shadow-sm transition-colors text-center border border-[#c79d3a]/40 flex items-center justify-center gap-1.5"
+                    >
+                      <span>Buka Flipbook ↗</span>
+                    </a>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}
